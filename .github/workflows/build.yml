@@ -29,9 +29,8 @@ jobs:
       run: docker build -t $IMAGE_NAME -f $DOCKERFILE_PATH .
     
     - name: Upload Docker image
-      uses: docker/build-push-action@v1
+      uses: docker/build-push-action@v2
       with:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
-        repository: NiJeTi/CinemaKeeper/cinema-keeper
