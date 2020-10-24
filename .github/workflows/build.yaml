@@ -6,10 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_PATH: ./src/CinemaKeeper.Service/CinemaKeeper.Service.csproj
-  BUILD_PATH: ./build
-  DOCKERFILE_PATH: ./ci/Dockerfile
-  IMAGE_NAME: cinema-keeper
+  DOCKERFILE_PATH: ./src/CinemaKeeper.Service/Dockerfile
 
 jobs:
   build:
@@ -17,14 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.403
-      
-    - name: Build .NET project
-      run: dotnet publish --configuration Release --output $BUILD_PATH $PROJECT_PATH
 
     - name: Build and upload Docker image
       uses: docker/build-push-action@v1
