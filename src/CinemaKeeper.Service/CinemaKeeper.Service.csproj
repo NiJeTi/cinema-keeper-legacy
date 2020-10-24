@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UserSecretsId>dotnet-CinemaKeeper.Service-EC9448FA-C84B-4367-9FD2-BD8B19DD0885</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="DSharpPlus" Version="3.2.3" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.9" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="3.1.9" />
+        <PackageReference Include="Serilog" Version="2.10.0" />
+        <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+    </ItemGroup>
+</Project>
