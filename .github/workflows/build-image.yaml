@@ -26,4 +26,4 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
-        repository: NiJeTi/CinemaKeeper/.${{ IMAGE_NAME }}
+        repository: $(NiJeTi/CinemaKeeper/).${{ IMAGE_NAME }}
