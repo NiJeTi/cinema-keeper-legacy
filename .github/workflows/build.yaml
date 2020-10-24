@@ -7,8 +7,6 @@ on:
 env:
   PROJECT_PATH: ./src/CinemaKeeper.Service/CinemaKeeper.Service.csproj
   BUILD_PATH: ./build
-  DOCKERFILE_PATH: ./ci/Dockerfile
-  IMAGE_NAME: cinema-keeper
 
 jobs:
   build:
