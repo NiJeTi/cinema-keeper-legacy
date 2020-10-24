@@ -28,7 +28,7 @@ jobs:
     - name: Build and push image
       uses: docker/build-push-action@v1
       with:
-          dockerfile: $DOCKERFILE_PATH
+          dockerfile: ${{ DOCKERFILE_PATH }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
