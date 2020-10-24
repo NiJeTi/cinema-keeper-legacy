@@ -11,7 +11,7 @@ env:
   IMAGE_NAME: cinema-keeper
 
 jobs:
-  main:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,5 +28,5 @@ jobs:
     - name: Store artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: build-$GITHUB_SHA
+        name: build-${{ GITHUB_SHA }}
         path: ./build
