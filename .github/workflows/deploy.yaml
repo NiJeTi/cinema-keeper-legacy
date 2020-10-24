@@ -27,4 +27,4 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_KEY }}
-          script: cd ${{ secrets.SERVER_DEPLOY_PATH }} && ./deploy.sh
+          script: cd ${{ secrets.SERVER_DEPLOY_PATH }} && chmod +x ./deploy.sh && ./deploy.sh
