@@ -3,10 +3,9 @@ version: '3.8'
 services:
   bot:
     image: docker.pkg.github.com/nijeti/cinemakeeper/cinema-keeper
-    name: CinemaKeeper
+    container_name: CinemaKeeper
     environment:
-      DOTNETCORE_ENVIRONMENT=Production
-      USER_SECRETS_ID=EC9448FA-C84B-4367-9FD2-BD8B19DD0885
+      - DOTNET_ENVIRONMENT=Production
     volumes:
-      - $HOME/.microsoft/usersecrets/$USER_SECRETS_ID/:/root/.microsoft/usersecrets/$USER_SECRETS_ID
-      - ./appsettings.$DOTNETCORE_ENVIRONMENT.json:/App/appsettings.$DOTNETCORE_ENVIRONMENT.json
+      - ./appsettings.Production.json:/App/appsettings.Production.json
+      - ./Logs:/App/Logs
