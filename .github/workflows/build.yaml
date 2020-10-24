@@ -26,7 +26,7 @@ jobs:
     - name: Build .NET project
       run: dotnet publish --configuration Release --output $BUILD_PATH $PROJECT_PATH
 
-    - name: Build and push image
+    - name: Build and upload Docker image
       uses: docker/build-push-action@v1
       with:
           dockerfile: ${{ env.DOCKERFILE_PATH }}
