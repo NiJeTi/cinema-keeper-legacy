@@ -1,0 +1,16 @@
+name: Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Project version
+        default: 1.0.0
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
