@@ -26,10 +26,10 @@ jobs:
       run: dotnet publish --configuration Release --output $BUILD_PATH $PROJECT_PATH
 
     - name: Build and push image
-    uses: docker/build-push-action@v1
-    with:
-        dockerfile: $DOCKERFILE_PATH
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: NiJeTi/CinemaKeeper/$IMAGE_NAME
+      uses: docker/build-push-action@v1
+      with:
+          dockerfile: $DOCKERFILE_PATH
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: NiJeTi/CinemaKeeper/$IMAGE_NAME
