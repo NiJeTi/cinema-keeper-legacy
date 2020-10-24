@@ -1,12 +1,10 @@
 name: Deployment
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: Project version
-        default: 1.0.0
-        required: true
+  workflow_dispatch
+
+env:
+  SCRIPTS_PATH: ./ci
 
 jobs:
   deploy:
@@ -14,3 +12,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - run: cd $SCRIPTS_PATH
+      
+      - name: Copy deployment scripts to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          key: ${{ secrets.SERVER_KEY }}
+          target: ${{ secrets.SERVER_DEPLOY_PATH }}
+          source: "$./deploy.sh,./docker-compose.yaml"
+
+      - name: Execute deployment script
+        uses: appleboy/ssh-action@master
+        with: 
+          host: ${{ secrets.SERVER_HOST }}
+          key: ${{ secrets.SERVER_KEY }}
+          script: ./deploy.sh ${{ secrets.SERVER_DEPLOY_PATH }}
