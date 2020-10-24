@@ -20,7 +20,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           key: ${{ secrets.SERVER_KEY }}
           target: ${{ secrets.SERVER_DEPLOY_PATH }}
-          source: "$./deploy.sh,./docker-compose.yaml"
+          source: "./deploy.sh,./docker-compose.yaml"
 
       - name: Execute deployment script
         uses: appleboy/ssh-action@master
