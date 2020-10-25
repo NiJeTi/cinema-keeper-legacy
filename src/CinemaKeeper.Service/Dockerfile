@@ -1,6 +1,5 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
 WORKDIR /src
-
 COPY . .
 RUN dotnet publish --configuration Release --output ./build
 
