@@ -21,7 +21,7 @@ jobs:
     - name: Build and upload Docker image
       uses: docker/build-push-action@v1
       with:
-          context: ${{ env.PROJECT_DIR }}
+          path: ${{ env.PROJECT_DIR }}
           dockerfile: ${{ env.DOCKERFILE_PATH }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
