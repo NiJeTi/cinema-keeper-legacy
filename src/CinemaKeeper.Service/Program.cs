@@ -1,7 +1,9 @@
 using System;
 
 using CinemaKeeper.Service.Extensions;
+using CinemaKeeper.Service.Services;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
@@ -28,15 +30,15 @@ namespace CinemaKeeper.Service
 
         private static IHost CreateHost(string[] args) =>
             Host.CreateDefaultBuilder(args)
-               .UseSerilog((hostContext, _) =>
-                {
-                    Log.Logger = new LoggerConfiguration()
-                       .ReadFrom.Configuration(hostContext.Configuration)
-                       .CreateLogger();
-                }, true)
+               .UseSerilog((hostContext, configuration) =>
+                        configuration
+                           .ReadFrom.Configuration(hostContext.Configuration),
+                    true)
                .ConfigureServices((hostContext, services) =>
                 {
                     services.AddDiscordBotConfiguration(hostContext.Configuration);
+
+                    services.AddHostedService<BotService>();
                 })
                .Build();
     }
