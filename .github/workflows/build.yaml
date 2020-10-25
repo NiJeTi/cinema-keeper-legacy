@@ -9,7 +9,6 @@ on:
 
 env:
   PROJECT_DIR: ./src/CinemaKeeper.Service
-  DOCKERFILE_PATH: $PROJECT_DIR/Dockerfile
 
 jobs:
   build:
@@ -22,7 +21,6 @@ jobs:
       uses: docker/build-push-action@v1
       with:
           path: ${{ env.PROJECT_DIR }}
-          dockerfile: ${{ env.DOCKERFILE_PATH }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
