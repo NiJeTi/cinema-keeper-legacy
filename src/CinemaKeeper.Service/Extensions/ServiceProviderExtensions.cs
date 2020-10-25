@@ -7,10 +7,11 @@ namespace CinemaKeeper.Service.Extensions
 {
     internal static class ServiceProviderExtensions
     {
-        public static IServiceCollection AddDiscordBotConfiguration(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDiscordBotConfiguration(this IServiceCollection services,
+            IConfiguration configuration)
         {
             var discordBotConfiguration = new DiscordBotConfiguration();
-            configuration.Bind("DiscordBot",discordBotConfiguration);
+            configuration.Bind("DiscordBot", discordBotConfiguration);
 
             return services.AddSingleton(discordBotConfiguration);
         }
