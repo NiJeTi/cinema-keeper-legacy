@@ -32,7 +32,6 @@ namespace CinemaKeeper.Service
                        .ReadFrom.Configuration(hostContext.Configuration)
                        .CreateLogger();
                 }, true)
-               .UseSystemd()
                .ConfigureServices((hostContext, services) =>
                 {
                     // TODO: Configure service
