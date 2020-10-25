@@ -1,5 +1,7 @@
 using System;
 
+using CinemaKeeper.Service.Extensions;
+
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
@@ -32,10 +34,9 @@ namespace CinemaKeeper.Service
                        .ReadFrom.Configuration(hostContext.Configuration)
                        .CreateLogger();
                 }, true)
-               .UseSystemd()
                .ConfigureServices((hostContext, services) =>
                 {
-                    // TODO: Configure service
+                    services.AddDiscordBotConfiguration(hostContext.Configuration);
                 })
                .Build();
     }
