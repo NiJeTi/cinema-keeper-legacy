@@ -9,7 +9,7 @@ on:
 
 env:
   PROJECT_DIR: ./src/CinemaKeeper.Service
-  DOCKERFILE_PATH: ${PROJECT_DIR}/Dockerfile
+  DOCKERFILE_PATH: ${{ env.PROJECT_DIR }}/Dockerfile
 
 jobs:
   build:
