@@ -39,6 +39,8 @@ namespace CinemaKeeper.Service
                     services.AddDiscordBotConfiguration(hostContext.Configuration);
 
                     services.AddHostedService<BotService>();
+                    services.AddHostedService<ModuleUpdater>();
+                    services.AddHostedService<DiscordLoggingService>();
                 })
                .Build();
     }
