@@ -1,17 +1,17 @@
-name: Build
+name: Build bot base
 
 on:
   push:
     branches: [ main ]
     paths:
-      - 'src/**'
+      - 'src/CinemaKeeper.Service/**'
   workflow_dispatch:
 
 env:
   PROJECT_DIR: ./src/CinemaKeeper.Service
 
 jobs:
-  build:
+  build-and-upload:
     runs-on: ubuntu-latest
 
     steps:
