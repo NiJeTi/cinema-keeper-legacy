@@ -1,26 +1,41 @@
-﻿using CinemaKeeper.Service.Configurations;
+﻿using System;
+using System.Linq;
 
+using CinemaKeeper.Service.Configurations;
+
+using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 
 namespace CinemaKeeper.Service.Adapters
 {
-    internal class DiscordBotConfigurationAdapter : IAdapter<DiscordSocketConfig>
+    internal class DiscordBotConfigurationAdapter : IAdapter<DiscordSocketConfig>, IAdapter<CommandServiceConfig>
     {
-        private readonly DiscordBotConfiguration _configuration;
+        private readonly DiscordBotConfiguration _discordBotConfiguration;
 
-        private DiscordBotConfigurationAdapter(DiscordBotConfiguration configuration)
+        private DiscordBotConfigurationAdapter(DiscordBotConfiguration discordBotConfiguration)
         {
-            _configuration = configuration;
+            _discordBotConfiguration = discordBotConfiguration;
         }
 
-        public static IAdapter<DiscordSocketConfig> Create(DiscordBotConfiguration configuration) =>
+        public static DiscordBotConfigurationAdapter Create(DiscordBotConfiguration configuration) =>
             new DiscordBotConfigurationAdapter(configuration);
 
-        public DiscordSocketConfig Convert()
+        CommandServiceConfig IAdapter<CommandServiceConfig>.Convert()
+        {
+            var commandServiceConfig = new CommandServiceConfig
+            {
+                LogLevel = Enum.GetValues(typeof(LogSeverity)).Cast<LogSeverity>().Max()
+            };
+
+            return commandServiceConfig;
+        }
+
+        DiscordSocketConfig IAdapter<DiscordSocketConfig>.Convert()
         {
             var discordSocketConfig = new DiscordSocketConfig
             {
-                LogLevel = _configuration.LogLevel
+                LogLevel = Enum.GetValues(typeof(LogSeverity)).Cast<LogSeverity>().Max()
             };
 
             return discordSocketConfig;
