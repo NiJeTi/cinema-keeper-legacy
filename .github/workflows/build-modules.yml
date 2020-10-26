@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build project CinemaKeeper.Modules
-        run: dotnet build --configuration Release --output ${{ env.BUILD_PATH }} ./src/CinemaKeeper.Modules/CinemaKeeper.Modules.csproj
+        run: dotnet build --configuration Release --output ${{ env.BUILD_PATH }} ./src/modules/CinemaKeeper.Modules/CinemaKeeper.Modules.csproj
 
       - name: Extract modules DLLs
         run: ./ci/extract_module_builds.sh ${{ env.BUILD_PATH }}
