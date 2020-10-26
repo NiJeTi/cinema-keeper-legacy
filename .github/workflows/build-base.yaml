@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_DIR: ./src/CinemaKeeper.Service
+  PROJECT_DIR: ./src/base/CinemaKeeper.Service
 
 jobs:
   build-and-upload:
