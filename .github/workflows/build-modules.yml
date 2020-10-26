@@ -1,0 +1,30 @@
+name: Build command modules
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/modules/**'
+  workflow_dispatch:
+
+env:
+  BUILD_PATH: ./build
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build project CinemaKeeper.Modules
+        run: dotnet build --configuration Release --output ${{ BUILD_PATH }} ./src/CinemaKeeper.Modules/CinemaKeeper.Modules.csproj
+
+      - name: Extract modules DLLs
+        run: ./ci/extract_module_builds.sh ${{ BUILD_PATH }}
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: module-builds
+          path: ${{ BUILD_PATH }}
