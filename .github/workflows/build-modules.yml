@@ -9,9 +9,10 @@ on:
 
 env:
   BUILD_PATH: ./build
+  MODULES_PATH: ./modules
 
 jobs:
-  build:
+  build-1:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,11 +21,29 @@ jobs:
       - name: Build project CinemaKeeper.Modules
         run: dotnet build --configuration Release --output ${{ env.BUILD_PATH }} ./src/modules/CinemaKeeper.Modules/CinemaKeeper.Modules.csproj
 
+      - name: Save build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-1
+          paths: ${{ env.BUILD_PATH }}
+  
+  extract-and-upload:
+    needs: [build-1]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Retrieve artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: ./modules
+      
       - name: Extract modules DLLs
-        run: ./ci/extract_module_builds.sh ${{ env.BUILD_PATH }}
+        run: chmod +x ./ci/extract_module_builds.sh && ./ci/extract_module_builds.sh ${{ env.MODULES_PATH }}
       
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: module-builds
+          name: modules
           path: ${{ env.BUILD_PATH }}
