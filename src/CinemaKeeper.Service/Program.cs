@@ -30,10 +30,10 @@ namespace CinemaKeeper.Service
 
         private static IHost CreateHost(string[] args) =>
             Host.CreateDefaultBuilder(args)
-               .UseSerilog((hostContext, configuration) =>
-                        configuration
-                           .ReadFrom.Configuration(hostContext.Configuration),
-                    true)
+               .UseSerilog((hostContext, _) =>
+                    Log.Logger = new LoggerConfiguration()
+                       .ReadFrom.Configuration(hostContext.Configuration)
+                       .CreateLogger(), true)
                .ConfigureServices((hostContext, services) =>
                 {
                     services.AddDiscordBotConfiguration(hostContext.Configuration);
