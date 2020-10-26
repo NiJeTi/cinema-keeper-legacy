@@ -37,7 +37,13 @@ jobs:
       - name: Retrieve artifacts
         uses: actions/download-artifact@v2
         with:
-          path: ./modules
+          path: ${{ env.MODULES_PATH }}
+      
+      - name: Delete build artifacts
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: |
+            build-1
       
       - name: Extract modules DLLs
         run: chmod +x ./ci/extract_module_builds.sh && ./ci/extract_module_builds.sh ${{ env.MODULES_PATH }}
