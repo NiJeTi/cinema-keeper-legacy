@@ -12,4 +12,5 @@ How I see it's behaviour:
 3. Only initial members of channel can unlock it
 ---
 
-## ⚠️ This project is in it's most earliest stage of development (it's kind of empty)
+## ⚠️ Only bot base implemented
+The bot is now ready to run, but there is no command modules has been implemented
