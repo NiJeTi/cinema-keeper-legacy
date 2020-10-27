@@ -54,4 +54,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: modules
-          path: ${{ env.MODULES_PATH }}
+          path: modules/
