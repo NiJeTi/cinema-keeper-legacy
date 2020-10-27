@@ -9,6 +9,7 @@ on:
 
 env:
   BUILD_PATH: ./build
+  ARTIFACTS_PATH: ./artifacts
   MODULES_PATH: ./modules
 
 jobs:
@@ -37,7 +38,7 @@ jobs:
       - name: Retrieve artifacts
         uses: actions/download-artifact@v2
         with:
-          path: ${{ env.MODULES_PATH }}
+          path: ${{ env.ARTIFACTS_PATH }}
       
       - name: Delete build artifacts
         uses: geekyeggo/delete-artifact@v1
@@ -46,7 +47,7 @@ jobs:
             build-1
       
       - name: Extract modules DLLs
-        run: chmod +x ./ci/extract_module_builds.sh && ./ci/extract_module_builds.sh ${{ env.MODULES_PATH }}
+        run: chmod +x ./ci/extract_module_builds.sh && ./ci/extract_module_builds.sh ${{ env.ARTIFACTS_PATH }} ${{ env.MODULES_PATH }}
       
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
