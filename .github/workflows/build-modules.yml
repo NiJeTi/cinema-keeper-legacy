@@ -26,7 +26,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build-1
-          path: build/
+          path: ${{ env.BUILD_PATH }}
   
   extract-and-upload:
     needs: [build-1]
@@ -54,4 +54,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: modules
-          path: modules/
+          path: ${{ env.MODULES_PATH }}
