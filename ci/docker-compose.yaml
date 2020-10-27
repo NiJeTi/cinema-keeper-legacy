@@ -8,3 +8,4 @@ services:
       - DOTNET_ENVIRONMENT=Production
     volumes:
       - ./appsettings.Production.json:/app/appsettings.Production.json
+      - ./Modules/:/app/Modules
