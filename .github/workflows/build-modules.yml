@@ -47,7 +47,8 @@ jobs:
             build-1
       
       - name: Extract modules DLLs
-        run: chmod +x ./ci/extract_module_builds.sh && ./ci/extract_module_builds.sh ${{ env.ARTIFACTS_PATH }} ${{ env.MODULES_PATH }}
+        run: chmod +x ./ci/extract_module_builds.sh \
+          ./ci/extract_module_builds.sh ${{ env.ARTIFACTS_PATH }} ${{ env.MODULES_PATH }}
       
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
