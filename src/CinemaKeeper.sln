@@ -1,12 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaKeeper.Service", "base\CinemaKeeper.Service\CinemaKeeper.Service.csproj", "{80954162-FE79-4161-9436-8DB7A561A902}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "base", "base", "{717FA363-7D58-448B-9B92-9D3B23E33A3A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{5FF81308-CA9A-49F1-B5AA-C80D533C6DCF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaKeeper.Modules", "modules\CinemaKeeper.Modules\CinemaKeeper.Modules.csproj", "{32AC36D1-9806-4174-A524-B46E1F09CF11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaKeeper.Service", "CinemaKeeper.Service\CinemaKeeper.Service.csproj", "{80954162-FE79-4161-9436-8DB7A561A902}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,13 +12,7 @@ Global
 		{80954162-FE79-4161-9436-8DB7A561A902}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80954162-FE79-4161-9436-8DB7A561A902}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80954162-FE79-4161-9436-8DB7A561A902}.Release|Any CPU.Build.0 = Release|Any CPU
-		{32AC36D1-9806-4174-A524-B46E1F09CF11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{32AC36D1-9806-4174-A524-B46E1F09CF11}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{32AC36D1-9806-4174-A524-B46E1F09CF11}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{32AC36D1-9806-4174-A524-B46E1F09CF11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{80954162-FE79-4161-9436-8DB7A561A902} = {717FA363-7D58-448B-9B92-9D3B23E33A3A}
-		{32AC36D1-9806-4174-A524-B46E1F09CF11} = {5FF81308-CA9A-49F1-B5AA-C80D533C6DCF}
 	EndGlobalSection
 EndGlobal
