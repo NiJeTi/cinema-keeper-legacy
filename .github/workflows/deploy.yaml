@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           target: ${{ secrets.SERVER_DEPLOY_PATH }}
           overwrite: true
-          source: "ci/deploy.sh,ci/docker-compose.yaml"
+          source: "ci/deploy_service.sh,ci/docker-compose.yaml"
           strip_components: 1
 
       - name: Execute main deployment script
@@ -27,4 +27,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_KEY }}
-          script: cd ${{ secrets.SERVER_DEPLOY_PATH }} && chmod +x ./deploy.sh && ./deploy.sh ${{ github.actor }} ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            cd ${{ secrets.SERVER_DEPLOY_PATH }}
+            chmod +x ./deploy_service.sh
+            ./deploy.sh ${{ github.actor }} ${{ secrets.GITHUB_TOKEN }}
