@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,13 +33,15 @@ namespace CinemaKeeper.Service.Services
             _commandService = services.GetService<CommandService>();
 
             _botConfiguration = services.GetService<DiscordBotConfiguration>();
+            
+            _client.MessageReceived += HandleCommand;
+            _commandService.CommandExecuted += OnCommandExecuted;
+
+            _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
-            _client.MessageReceived += HandleCommand;
-            _commandService.CommandExecuted += OnCommandExecuted;
-
             await _client.LoginAsync(TokenType.Bot, _botConfiguration.Token);
             await _client.StartAsync();
         }
