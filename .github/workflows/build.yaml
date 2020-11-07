@@ -1,4 +1,4 @@
-name: Build bot base
+name: Build
 
 on:
   push:
