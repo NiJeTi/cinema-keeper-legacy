@@ -22,11 +22,7 @@ namespace CinemaKeeper.Service.Services
             commandService.Log += Log;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-                await Task.Yield();
-        }
+        protected override Task ExecuteAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
         private static Task Log(LogMessage message)
         {

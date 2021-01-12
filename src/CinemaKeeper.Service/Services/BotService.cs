@@ -57,11 +57,7 @@ namespace CinemaKeeper.Service.Services
             _client.Dispose();
         }
 
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-                await Task.Yield();
-        }
+        protected override Task ExecuteAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
         private async Task HandleCommand(SocketMessage message)
         {
