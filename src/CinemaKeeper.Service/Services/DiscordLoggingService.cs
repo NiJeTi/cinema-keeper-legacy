@@ -15,8 +15,8 @@ namespace CinemaKeeper.Service.Services
     {
         public DiscordLoggingService(IServiceProvider services)
         {
-            var client = services.GetService<DiscordSocketClient>();
-            var commandService = services.GetService<CommandService>();
+            var client = services.GetRequiredService<DiscordSocketClient>();
+            var commandService = services.GetRequiredService<CommandService>();
 
             client.Log += Log;
             commandService.Log += Log;
