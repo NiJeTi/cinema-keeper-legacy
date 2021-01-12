@@ -19,7 +19,6 @@ namespace CinemaKeeper.Service.Modules
             var voiceChannel = (Context.User as SocketGuildUser)!.VoiceChannel;
 
             await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = null);
-            await Context.Message.DeleteAsync();
 
             Log.Debug($"Unlocked channel {voiceChannel}");
         }
