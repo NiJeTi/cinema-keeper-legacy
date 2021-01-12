@@ -3,6 +3,7 @@ version: '3.8'
 services:
   bot:
     image: docker.pkg.github.com/nijeti/cinemakeeper/cinema-keeper
+    pull: true
     container_name: CinemaKeeper
     environment:
       - DOTNET_ENVIRONMENT=Production
