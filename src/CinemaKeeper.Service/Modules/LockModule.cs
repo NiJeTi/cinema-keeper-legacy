@@ -9,7 +9,7 @@ namespace CinemaKeeper.Service.Modules
     public class LockModule : ModuleBase<SocketCommandContext>
     {
         [RequireContext(ContextType.Guild)]
-        [RequireBotPermission(GuildPermission.ManageChannels)]
+        [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
         [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
         [Command("lock")]
         public async Task Lock()
