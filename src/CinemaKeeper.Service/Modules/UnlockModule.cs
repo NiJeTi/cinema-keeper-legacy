@@ -18,7 +18,7 @@ namespace CinemaKeeper.Service.Modules
         {
             var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel;
             
-            if (voiceChannel == null)
+            if (voiceChannel is null)
             {
                 await Context.Channel.SendMessageAsync("User must be in a voice channel to use this command.");
                 
