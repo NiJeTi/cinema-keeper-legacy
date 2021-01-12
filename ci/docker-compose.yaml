@@ -9,4 +9,3 @@ services:
     volumes:
       - ./appsettings.Production.json:/app/appsettings.Production.json
       - ./Logs/:/app/Logs
-      - ./Modules/:/app/Modules
