@@ -16,7 +16,12 @@ namespace CinemaKeeper.Service.Modules
         [Command("lock")]
         public async Task Lock()
         {
-            var voiceChannel = (Context.User as SocketGuildUser)!.VoiceChannel;
+            var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel;
+            if (voiceChannel == null)
+            {
+                await Context.Channel.SendMessageAsync("User must be in a voice channel to use this command.");
+                return;
+            }
 
             await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = voiceChannel.Users.Count);
 
