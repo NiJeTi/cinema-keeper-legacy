@@ -8,4 +8,4 @@ services:
       - DOTNET_ENVIRONMENT=Production
     volumes:
       - ./appsettings.Production.json:/app/appsettings.Production.json
-      - ./Logs/:/app/Logs
+      - ./Logs/:/app/Logs:ro
