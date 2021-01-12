@@ -10,4 +10,3 @@ How I see it's behaviour:
 1. Ya 'n ya boiz enter desired voice channel
 2. One of you requests channel `!lock` and bot sets user limit
 3. One of you requests channel `!unlock` and bot removes user limit
----
