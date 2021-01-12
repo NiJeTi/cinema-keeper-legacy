@@ -59,6 +59,17 @@ namespace CinemaKeeper.Service.Services
 
         protected override Task ExecuteAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
+        private static async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context,
+            IResult result)
+        {
+            if (!string.IsNullOrEmpty(result.ErrorReason))
+                await context.Channel.SendMessageAsync(result.ErrorReason);
+
+            string commandName = command.IsSpecified ? command.Value.Name : "unknown command";
+
+            Log.Information($"Executed \"{commandName}\" for {context.User.Username}");
+        }
+
         private async Task HandleCommand(SocketMessage message)
         {
             if (!(message is SocketUserMessage command))
@@ -74,16 +85,6 @@ namespace CinemaKeeper.Service.Services
             var commandContext = new SocketCommandContext(_client, command);
 
             await _commandService.ExecuteAsync(commandContext, cmdStartPos, _services);
-        }
-
-        private async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)
-        {
-            if (!string.IsNullOrEmpty(result.ErrorReason))
-                await context.Channel.SendMessageAsync(result.ErrorReason);
-
-            string commandName = command.IsSpecified ? command.Value.Name : "unknown command";
-
-            Log.Information($"Executed \"{commandName}\" for {context.User.Username}");
         }
     }
 }
