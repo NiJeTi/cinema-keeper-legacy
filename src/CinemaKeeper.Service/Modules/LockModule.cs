@@ -4,6 +4,8 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 
+using Serilog;
+
 namespace CinemaKeeper.Service.Modules
 {
     public class LockModule : ModuleBase<SocketCommandContext>
@@ -18,6 +20,8 @@ namespace CinemaKeeper.Service.Modules
 
             await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = voiceChannel.Users.Count);
             await Context.Message.DeleteAsync();
+
+            Log.Debug($"Locked channel {voiceChannel} for {voiceChannel.UserLimit} users");
         }
     }
 }
