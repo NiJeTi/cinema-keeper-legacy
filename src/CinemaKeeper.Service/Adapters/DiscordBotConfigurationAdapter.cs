@@ -19,7 +19,7 @@ namespace CinemaKeeper.Service.Adapters
         }
 
         public static DiscordBotConfigurationAdapter Create(DiscordBotConfiguration configuration) =>
-            new DiscordBotConfigurationAdapter(configuration);
+            new(configuration);
 
         CommandServiceConfig IAdapter<CommandServiceConfig>.Convert()
         {

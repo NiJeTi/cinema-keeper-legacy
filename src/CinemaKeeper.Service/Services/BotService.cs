@@ -29,11 +29,11 @@ namespace CinemaKeeper.Service.Services
         {
             _services = services;
 
-            _client = services.GetService<DiscordSocketClient>();
-            _commandService = services.GetService<CommandService>();
+            _client = services.GetRequiredService<DiscordSocketClient>();
+            _commandService = services.GetRequiredService<CommandService>();
 
-            _botConfiguration = services.GetService<DiscordBotConfiguration>();
-            
+            _botConfiguration = services.GetRequiredService<DiscordBotConfiguration>();
+
             _client.MessageReceived += HandleCommand;
             _commandService.CommandExecuted += OnCommandExecuted;
 
