@@ -3,7 +3,7 @@
 # CinemaKeeper
 ### Guess what? It's a Discord bot!
 
-It'll control private voice-chat rooms on Discord server.
+It controls private voice-chat rooms on Discord server.
 
 ---
 How to use it:
