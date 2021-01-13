@@ -23,6 +23,7 @@ namespace CinemaKeeper.Service.Helpers
             }
             catch (Exception e)
             {
+                await context.Channel.SendMessageAsync("Oops... Something went wrong.");
                 Log.Debug(e.Message);
             }
         }
