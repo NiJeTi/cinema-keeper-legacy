@@ -59,11 +59,6 @@ namespace CinemaKeeper.Service.Modules
                 return;
             }
 
-            if (membersCountRaw.Equals(string.Empty))
-            {
-                membersCount = voiceChannel.Users.Count;
-            }
-
             await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = membersCount);
 
             Log.Debug($"Locked channel {voiceChannel} for {voiceChannel.UserLimit} users");
