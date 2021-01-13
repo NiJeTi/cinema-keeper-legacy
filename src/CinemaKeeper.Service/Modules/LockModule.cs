@@ -37,24 +37,25 @@ namespace CinemaKeeper.Service.Modules
         public async Task Lock([Remainder] string membersCountRaw)
         {
             var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel;
+            var textChannel  = Context.Channel;
             
             if (voiceChannel is null)
             {
-                await Context.Channel.SendMessageAsync("User must be in a voice channel to use this command.");
+                await textChannel.SendMessageAsync("User must be in a voice channel to use this command.");
                 
                 return;
             }
 
             if (!int.TryParse(membersCountRaw, out var membersCount))
             {
-                await Context.Channel.SendMessageAsync("Lock member limit must be an integer.");
+                await textChannel.SendMessageAsync("Lock user limit must be an integer.");
                 
                 return;
             }
 
             if (membersCount < voiceChannel.Users.Count)
             {
-                await Context.Channel.SendMessageAsync("Lock member limit less than current members count.");
+                await textChannel.SendMessageAsync("Lock user limit less than current users count.");
                 
                 return;
             }
