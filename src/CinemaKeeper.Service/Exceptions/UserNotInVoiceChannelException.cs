@@ -2,5 +2,5 @@
 
 namespace CinemaKeeper.Service.Exceptions
 {
-	public class UserNotInVoiceChannelException : Exception { }
+    public class UserNotInVoiceChannelException : Exception { }
 }

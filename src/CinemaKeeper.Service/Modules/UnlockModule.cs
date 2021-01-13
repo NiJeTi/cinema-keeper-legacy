@@ -11,30 +11,30 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Modules
 {
-	public class UnlockModule : ModuleBase<SocketCommandContext>
-	{
-		private readonly IExceptionShield<SocketCommandContext> _shield;
+    public class UnlockModule : ModuleBase<SocketCommandContext>
+    {
+        private readonly IExceptionShield<SocketCommandContext> _shield;
 
-		public UnlockModule(IExceptionShield<SocketCommandContext> shield)
-		{
-			_shield = shield;
-		}
+        public UnlockModule(IExceptionShield<SocketCommandContext> shield)
+        {
+            _shield = shield;
+        }
 
-		[RequireContext(ContextType.Guild)]
-		[RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
-		[RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
-		[Command("unlock")]
-		public async Task Unlock()
-		{
-			await _shield.Protect(Context, async () =>
-			{
-				var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel ??
-				                   throw new UserNotInVoiceChannelException();
+        [RequireContext(ContextType.Guild)]
+        [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
+        [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
+        [Command("unlock")]
+        public async Task Unlock()
+        {
+            await _shield.Protect(Context, async () =>
+            {
+                var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel ??
+                                   throw new UserNotInVoiceChannelException();
 
-				await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = null);
+                await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = null);
 
-				Log.Debug($"Unlocked channel {voiceChannel}.");
-			});
-		}
-	}
+                Log.Debug($"Unlocked channel {voiceChannel}.");
+            });
+        }
+    }
 }

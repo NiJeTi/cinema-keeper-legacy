@@ -13,7 +13,7 @@ namespace CinemaKeeper.Service.Extensions
     internal static class ServiceProviderExtensions
     {
         public static IServiceCollection AddConfigurations(this IServiceCollection services,
-            IConfiguration configuration)
+                                                           IConfiguration          configuration)
         {
             var discordBotConfiguration = new DiscordBotConfiguration();
             configuration.Bind("DiscordBot", discordBotConfiguration);
@@ -23,7 +23,7 @@ namespace CinemaKeeper.Service.Extensions
         }
 
         public static IServiceCollection AddDiscordClient(this IServiceCollection services,
-            DiscordBotConfiguration configuration)
+                                                          DiscordBotConfiguration configuration)
         {
             var configAdapter = DiscordBotConfigurationAdapter.Create(configuration) as IAdapter<DiscordSocketConfig>;
             var discordSocketConfig = configAdapter.Convert();
@@ -34,7 +34,7 @@ namespace CinemaKeeper.Service.Extensions
         }
 
         public static IServiceCollection AddCommandService(this IServiceCollection services,
-            DiscordBotConfiguration configuration)
+                                                           DiscordBotConfiguration configuration)
         {
             var configAdapter = DiscordBotConfigurationAdapter.Create(configuration) as IAdapter<CommandServiceConfig>;
             var commandServiceConfig = configAdapter.Convert();

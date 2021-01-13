@@ -12,35 +12,35 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Modules
 {
-	public class MentionChannelModule : ModuleBase<SocketCommandContext>
-	{
-		private readonly IExceptionShield<SocketCommandContext> _shield;
+    public class MentionChannelModule : ModuleBase<SocketCommandContext>
+    {
+        private readonly IExceptionShield<SocketCommandContext> _shield;
 
-		public MentionChannelModule(IExceptionShield<SocketCommandContext> shield)
-		{
-			_shield = shield;
-		}
+        public MentionChannelModule(IExceptionShield<SocketCommandContext> shield)
+        {
+            _shield = shield;
+        }
 
-		[RequireContext(ContextType.Guild)]
-		[RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
-		[RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
-		[Command("mentionChannel")]
-		public async Task MentionChannel()
-		{
-			await _shield.Protect(Context, async () =>
-			{
-				var user = Context.User;
+        [RequireContext(ContextType.Guild)]
+        [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
+        [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
+        [Command("mentionChannel")]
+        public async Task MentionChannel()
+        {
+            await _shield.Protect(Context, async () =>
+            {
+                var user = Context.User;
 
-				var voiceChannel = (user as SocketGuildUser)?.VoiceChannel ??
-				                   throw new UserNotInVoiceChannelException();
+                var voiceChannel = (user as SocketGuildUser)?.VoiceChannel ??
+                                   throw new UserNotInVoiceChannelException();
 
-				var usersList = voiceChannel.Users.Where(x => !x.Username.Equals(Context.User.Username));
-				var channelMentionString = string.Join(" ", usersList.Select(x => x.Mention));
+                var usersList            = voiceChannel.Users.Where(x => !x.Username.Equals(Context.User.Username));
+                var channelMentionString = string.Join(" ", usersList.Select(x => x.Mention));
 
-				await Context.Channel.SendMessageAsync(channelMentionString);
+                await Context.Channel.SendMessageAsync(channelMentionString);
 
-				Log.Debug($"Mentioned all users in {voiceChannel}.");
-			});
-		}
-	}
+                Log.Debug($"Mentioned all users in {voiceChannel}.");
+            });
+        }
+    }
 }
