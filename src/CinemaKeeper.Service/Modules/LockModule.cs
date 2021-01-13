@@ -34,7 +34,7 @@ namespace CinemaKeeper.Service.Modules
         [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
         [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
         [Command("lock")]
-        public async Task Lock([Remainder] string usersCountRaw)
+        public async Task Lock([Remainder] string usersLimitRaw)
         {
             var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel;
             var textChannel = Context.Channel;
@@ -46,23 +46,33 @@ namespace CinemaKeeper.Service.Modules
                 return;
             }
 
-            if (!int.TryParse(usersCountRaw, out var usersCount))
+            if (!int.TryParse(usersLimitRaw, out var usersLimit))
             {
                 await textChannel.SendMessageAsync("Lock user limit must be an integer.");
 
                 return;
             }
 
-            if (usersCount < voiceChannel.Users.Count)
+            if (!IsUsersLimitValid(usersLimit, voiceChannel.Users.Count))
             {
-                await textChannel.SendMessageAsync("Lock user limit less than current users count.");
+                await textChannel.SendMessageAsync("Lock user limit has invalid value.");
 
                 return;
             }
 
-            await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = usersCount);
+            await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = usersLimit);
 
             Log.Debug($"Locked channel {voiceChannel} for {voiceChannel.UserLimit} user(s).");
+        }
+
+        private static bool IsUsersLimitValid(int value, int currentUsersCount)
+        {
+            const int minUsersLimit = 1;
+            const int maxUsersLimit = 99;
+
+            return value >= currentUsersCount
+                && value >= minUsersLimit
+                && value <= maxUsersLimit;
         }
     }
 }
