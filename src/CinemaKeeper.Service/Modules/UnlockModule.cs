@@ -1,5 +1,8 @@
 ﻿using System.Threading.Tasks;
 
+using CinemaKeeper.Service.Exceptions;
+using CinemaKeeper.Service.Helpers;
+
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -8,26 +11,30 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Modules
 {
-    public class UnlockModule : ModuleBase<SocketCommandContext>
-    {
-        [RequireContext(ContextType.Guild)]
-        [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
-        [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
-        [Command("unlock")]
-        public async Task Unlock()
-        {
-            var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel;
-            
-            if (voiceChannel is null)
-            {
-                await Context.Channel.SendMessageAsync("User must be in a voice channel to use this command.");
-                
-                return;
-            }
+	public class UnlockModule : ModuleBase<SocketCommandContext>
+	{
+		private readonly IExceptionShield<SocketCommandContext> _shield;
 
-            await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = null);
+		public UnlockModule(IExceptionShield<SocketCommandContext> shield)
+		{
+			_shield = shield;
+		}
 
-            Log.Debug($"Unlocked channel {voiceChannel}.");
-        }
-    }
+		[RequireContext(ContextType.Guild)]
+		[RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
+		[RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
+		[Command("unlock")]
+		public async Task Unlock()
+		{
+			await _shield.Protect(Context, async () =>
+			{
+				var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel ??
+				                   throw new UserNotInVoiceChannelException();
+
+				await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = null);
+
+				Log.Debug($"Unlocked channel {voiceChannel}.");
+			});
+		}
+	}
 }
