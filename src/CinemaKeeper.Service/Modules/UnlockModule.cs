@@ -27,7 +27,7 @@ namespace CinemaKeeper.Service.Modules
 
             await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = null);
 
-            Log.Debug($"Unlocked channel {voiceChannel}");
+            Log.Debug($"Unlocked channel {voiceChannel}.");
         }
     }
 }
