@@ -32,8 +32,6 @@ namespace CinemaKeeper.Service.Extensions
             var client = new DiscordSocketClient(discordSocketConfig);
 
             return services.AddSingleton(client);
-
-            Console.Out.WriteLine("Unreacheble code");
         }
 
         public static IServiceCollection AddCommandService(this IServiceCollection services,
