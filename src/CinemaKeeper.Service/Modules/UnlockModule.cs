@@ -21,7 +21,7 @@ namespace CinemaKeeper.Service.Modules
         }
 
         [RequireContext(ContextType.Guild)]
-        [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
+        [RequireBotPermission(GuildPermission.ManageChannels)]
         [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
         [Command("unlock")]
         public async Task Unlock()

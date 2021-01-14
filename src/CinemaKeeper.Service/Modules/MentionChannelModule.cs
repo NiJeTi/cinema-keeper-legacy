@@ -23,7 +23,7 @@ namespace CinemaKeeper.Service.Modules
         }
 
         [RequireContext(ContextType.Guild)]
-        [RequireBotPermission(GuildPermission.SendMessages | GuildPermission.MentionEveryone)]
+        [RequireBotPermission(GuildPermission.SendMessages)]
         [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
         [Command("castv")]
         public async Task MentionChannel()
