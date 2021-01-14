@@ -31,8 +31,8 @@ namespace CinemaKeeper.Service.Modules
             {
                 var user = Context.User;
 
-                var voiceChannel = (user as SocketGuildUser)?.VoiceChannel ??
-                                   throw new UserNotInVoiceChannelException();
+                var voiceChannel = (user as SocketGuildUser)?.VoiceChannel
+                                   ?? throw new UserNotInVoiceChannelException();
 
                 var usersList            = voiceChannel.Users.Where(x => !x.Username.Equals(Context.User.Username));
                 var channelMentionString = string.Join(" ", usersList.Select(x => x.Mention));

@@ -28,8 +28,8 @@ namespace CinemaKeeper.Service.Modules
         {
             await _shield.Protect(Context, async () =>
             {
-                var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel ??
-                                   throw new UserNotInVoiceChannelException();
+                var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel
+                                   ?? throw new UserNotInVoiceChannelException();
 
                 await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = voiceChannel.Users.Count);
 
@@ -45,8 +45,8 @@ namespace CinemaKeeper.Service.Modules
         {
             await _shield.Protect(Context, async () =>
             {
-                var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel ??
-                                   throw new UserNotInVoiceChannelException();
+                var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel
+                                   ?? throw new UserNotInVoiceChannelException();
 
                 var textChannel = Context.Channel;
 
