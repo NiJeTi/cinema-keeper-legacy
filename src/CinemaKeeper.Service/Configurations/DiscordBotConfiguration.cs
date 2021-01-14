@@ -3,7 +3,7 @@
 namespace CinemaKeeper.Service.Configurations
 {
     [Serializable]
-    internal class DiscordBotConfiguration
+    internal record DiscordBotConfiguration
     {
         public string Token { get; set; } = string.Empty;
 
