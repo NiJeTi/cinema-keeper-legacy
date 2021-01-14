@@ -54,6 +54,7 @@ namespace CinemaKeeper.Service.Services
         public override void Dispose()
         {
             _client.Dispose();
+            (_commandService as IDisposable).Dispose();
         }
 
         protected override Task ExecuteAsync(CancellationToken cancellationToken) => Task.CompletedTask;

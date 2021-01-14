@@ -13,6 +13,12 @@ namespace CinemaKeeper.Service.Helpers
     {
         public async Task Protect(SocketCommandContext context, Func<Task> action)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
             try
             {
                 await action();
