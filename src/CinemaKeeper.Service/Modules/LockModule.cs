@@ -1,5 +1,8 @@
 ﻿using System.Threading.Tasks;
 
+using CinemaKeeper.Service.Exceptions;
+using CinemaKeeper.Service.Helpers;
+
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -8,26 +11,30 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Modules
 {
-    public class LockModule : ModuleBase<SocketCommandContext>
+    internal class LockModule : ModuleBase<SocketCommandContext>
     {
+        private readonly IExceptionShield<SocketCommandContext> _shield;
+
+        public LockModule(IExceptionShield<SocketCommandContext> shield)
+        {
+            _shield = shield;
+        }
+
         [RequireContext(ContextType.Guild)]
         [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
         [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
         [Command("lock")]
         public async Task Lock()
         {
-            var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel;
-
-            if (voiceChannel is null)
+            await _shield.Protect(Context, async () =>
             {
-                await Context.Channel.SendMessageAsync("User must be in a voice channel to use this command.");
+                var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel
+                    ?? throw new UserNotInVoiceChannelException();
 
-                return;
-            }
+                await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = voiceChannel.Users.Count);
 
-            await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = voiceChannel.Users.Count);
-
-            Log.Debug($"Locked channel {voiceChannel} for {voiceChannel.UserLimit} user(s).");
+                Log.Debug($"Locked channel {voiceChannel} for {voiceChannel.UserLimit} user(s).");
+            });
         }
 
         [RequireContext(ContextType.Guild)]
@@ -36,33 +43,31 @@ namespace CinemaKeeper.Service.Modules
         [Command("lock")]
         public async Task Lock([Remainder] string usersLimitRaw)
         {
-            var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel;
-            var textChannel = Context.Channel;
-
-            if (voiceChannel is null)
+            await _shield.Protect(Context, async () =>
             {
-                await textChannel.SendMessageAsync("User must be in a voice channel to use this command.");
+                var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel
+                    ?? throw new UserNotInVoiceChannelException();
 
-                return;
-            }
+                var textChannel = Context.Channel;
 
-            if (!int.TryParse(usersLimitRaw, out var usersLimit))
-            {
-                await textChannel.SendMessageAsync("Lock user limit must be an integer.");
+                if (!int.TryParse(usersLimitRaw, out var usersLimit))
+                {
+                    await textChannel.SendMessageAsync("Lock user limit must be an integer.");
 
-                return;
-            }
+                    return;
+                }
 
-            if (!IsUsersLimitValid(usersLimit, voiceChannel.Users.Count))
-            {
-                await textChannel.SendMessageAsync("Lock user limit has invalid value.");
+                if (!IsUsersLimitValid(usersLimit, voiceChannel.Users.Count))
+                {
+                    await textChannel.SendMessageAsync("Lock user limit has invalid value.");
 
-                return;
-            }
+                    return;
+                }
 
-            await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = usersLimit);
+                await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = usersLimit);
 
-            Log.Debug($"Locked channel {voiceChannel} for {voiceChannel.UserLimit} user(s).");
+                Log.Debug($"Locked channel {voiceChannel} for {voiceChannel.UserLimit} user(s).");
+            });
         }
 
         private static bool IsUsersLimitValid(int value, int currentUsersCount)

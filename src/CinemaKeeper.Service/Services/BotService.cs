@@ -18,12 +18,11 @@ namespace CinemaKeeper.Service.Services
 {
     internal class BotService : BackgroundService
     {
-        private readonly IServiceProvider _services;
+        private readonly DiscordBotConfiguration _botConfiguration;
 
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commandService;
-
-        private readonly DiscordBotConfiguration _botConfiguration;
+        private readonly IServiceProvider _services;
 
         public BotService(IServiceProvider services)
         {

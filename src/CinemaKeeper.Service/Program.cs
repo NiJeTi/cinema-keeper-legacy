@@ -46,7 +46,8 @@ namespace CinemaKeeper.Service
 
                     services
                        .AddDiscordClient(discordBotConfiguration!)
-                       .AddCommandService(discordBotConfiguration!);
+                       .AddCommandService(discordBotConfiguration!)
+                       .AddDependencies();
 
                     services.AddHostedService<BotService>();
                     services.AddHostedService<DiscordLoggingService>();
