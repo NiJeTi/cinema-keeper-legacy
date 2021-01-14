@@ -25,7 +25,7 @@ namespace CinemaKeeper.Service.Modules
         [RequireContext(ContextType.Guild)]
         [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
         [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
-        [Command("mentionChannel")]
+        [Command("castv")]
         public async Task MentionChannel()
         {
             await _shield.Protect(Context, async () =>
