@@ -23,9 +23,9 @@ jobs:
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
       with:
-        registry: ghcr.io
+        registry: docker.pkg.github.com
         username: ${{ github.repository_owner }}
-        password: ${{ secrets.CR_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and upload Docker image
       uses: docker/build-push-action@v2
@@ -33,4 +33,4 @@ jobs:
         context: ${{ env.PROJECT_DIR }}
         push: true
         tags: |
-          ghcr.io/nijeti/cinemakeeper/cinema-keeper:latest
+          docker.pkg.github.com/nijeti/cinemakeeper/cinema-keeper:latest
