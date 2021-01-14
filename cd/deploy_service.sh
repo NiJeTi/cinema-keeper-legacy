@@ -9,7 +9,7 @@ fi
 
 docker login \
 --username $DOCKER_LOGIN --password $DOCKER_TOKEN \
-docker.pkg.github.com
+ghcr.io
 
 docker-compose down --rmi all && \
 docker-compose pull && \
