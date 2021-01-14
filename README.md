@@ -1,7 +1,7 @@
 ![Build](https://github.com/NiJeTi/CinemaKeeper/workflows/Build/badge.svg)
 
 # CinemaKeeper
-### Guess what? It's a Discord bot!
+## Guess what? It's a Discord bot!
 
 It can:
 - Lock voice channels
