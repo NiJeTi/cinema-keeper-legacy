@@ -11,7 +11,7 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Modules
 {
-    internal class LockModule : ModuleBase<SocketCommandContext>
+    public class LockModule : ModuleBase<SocketCommandContext>
     {
         private readonly IExceptionShield<SocketCommandContext> _shield;
 

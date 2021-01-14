@@ -13,7 +13,7 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Modules
 {
-    internal class MentionChannelModule : ModuleBase<SocketCommandContext>
+    public class MentionChannelModule : ModuleBase<SocketCommandContext>
     {
         private readonly IExceptionShield<SocketCommandContext> _shield;
 
@@ -23,7 +23,7 @@ namespace CinemaKeeper.Service.Modules
         }
 
         [RequireContext(ContextType.Guild)]
-        [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
+        [RequireBotPermission(GuildPermission.SendMessages | GuildPermission.MentionEveryone)]
         [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
         [Command("castv")]
         public async Task MentionChannel()

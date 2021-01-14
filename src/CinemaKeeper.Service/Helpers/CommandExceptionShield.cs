@@ -9,7 +9,7 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Helpers
 {
-    internal class CommandExceptionShield : IExceptionShield<SocketCommandContext>
+    public class CommandExceptionShield : IExceptionShield<SocketCommandContext>
     {
         public async Task Protect(SocketCommandContext context, Func<Task> action)
         {
