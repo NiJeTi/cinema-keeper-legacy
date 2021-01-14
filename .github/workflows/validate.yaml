@@ -24,6 +24,11 @@ jobs:
         with: 
           dotnet-version: 3.1
 
+      - name: Setup .NET version of project
+        uses: actions/setup-dotnet@v1
+        with: 
+          dotnet-version: 5.0
+
       - name: Restore tools
         working-directory: ${{ env.SOURCE_DIR }}
         run: dotnet tool restore
