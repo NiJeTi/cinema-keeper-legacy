@@ -59,8 +59,8 @@ namespace CinemaKeeper.Service.Services
 
         protected override Task ExecuteAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-        private static async Task OnCommandExecuted(
-            Optional<CommandInfo> command, ICommandContext context, IResult result)
+        private static async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context,
+            IResult result)
         {
             if (!string.IsNullOrEmpty(result.ErrorReason))
                 await context.Channel.SendMessageAsync(result.ErrorReason);
