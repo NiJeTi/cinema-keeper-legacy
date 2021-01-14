@@ -28,6 +28,10 @@ jobs:
         working-directory: ${{ env.SOURCE_DIR }}
         run: dotnet tool restore
 
+      - name: Restore project dependencies
+        working-directory: ${{ env.SOURCE_DIR }}
+        run: dotnet restore
+
       - name: Run inspection
         working-directory: ${{ env.SOURCE_DIR }}
         run: dotnet tool run jb inspectcode ${{ env.SLN_NAME }} -s=HINT -o="Inspection results.html" -f=Html
