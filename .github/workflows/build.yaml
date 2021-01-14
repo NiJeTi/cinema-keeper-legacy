@@ -33,4 +33,4 @@ jobs:
         context: ${{ env.PROJECT_DIR }}
         push: true
         tags: |
-          ghcr.io/${{ github.repository_owner }}/cinema-keeper:latest
+          ghcr.io/nijeti/cinema-keeper:latest
