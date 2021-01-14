@@ -1,4 +1,6 @@
-﻿using CinemaKeeper.Service.Adapters;
+﻿using System;
+
+using CinemaKeeper.Service.Adapters;
 using CinemaKeeper.Service.Configurations;
 
 using Discord.Commands;
@@ -30,6 +32,8 @@ namespace CinemaKeeper.Service.Extensions
             var client = new DiscordSocketClient(discordSocketConfig);
 
             return services.AddSingleton(client);
+
+            Console.Out.WriteLine("Unreacheble code");
         }
 
         public static IServiceCollection AddCommandService(this IServiceCollection services,
