@@ -11,7 +11,7 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Modules
 {
-    internal class LockModule : ModuleBase<SocketCommandContext>
+    public class LockModule : ModuleBase<SocketCommandContext>
     {
         private readonly IExceptionShield<SocketCommandContext> _shield;
 
@@ -21,7 +21,7 @@ namespace CinemaKeeper.Service.Modules
         }
 
         [RequireContext(ContextType.Guild)]
-        [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
+        [RequireBotPermission(GuildPermission.ManageChannels)]
         [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
         [Command("lock")]
         public async Task Lock()
