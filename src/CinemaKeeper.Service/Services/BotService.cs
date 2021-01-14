@@ -66,7 +66,7 @@ namespace CinemaKeeper.Service.Services
 
             var commandName = command.IsSpecified ? command.Value.Name : "unknown command";
 
-            Log.Information($"Executed \"{commandName}\" for {context.User.Username}");
+            Log.Information($"Executed \"{commandName}\" for {context.User}");
         }
 
         private async Task HandleCommand(SocketMessage message)
