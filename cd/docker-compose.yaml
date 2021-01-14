@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   bot:
-    image: docker.pkg.github.com/nijeti/cinemakeeper/cinema-keeper
+    image: ghcr.io/nijeti/cinema-keeper
     container_name: CinemaKeeper
     environment:
       - DOTNET_ENVIRONMENT=Production
     volumes:
       - ./appsettings.Production.json:/app/appsettings.Production.json
-      - ./Logs/:/app/Logs:ro
+      - ./Logs/:/app/Logs
