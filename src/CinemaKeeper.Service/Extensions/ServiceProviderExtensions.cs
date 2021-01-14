@@ -1,6 +1,4 @@
-﻿using System;
-
-using CinemaKeeper.Service.Adapters;
+﻿using CinemaKeeper.Service.Adapters;
 using CinemaKeeper.Service.Configurations;
 
 using Discord.Commands;
