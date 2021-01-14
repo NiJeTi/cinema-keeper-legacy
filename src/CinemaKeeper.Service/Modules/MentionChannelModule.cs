@@ -12,7 +12,7 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Modules
 {
-    public class MentionChannelModule : ModuleBase<SocketCommandContext>
+    internal class MentionChannelModule : ModuleBase<SocketCommandContext>
     {
         private readonly IExceptionShield<SocketCommandContext> _shield;
 
@@ -32,9 +32,9 @@ namespace CinemaKeeper.Service.Modules
                 var user = Context.User;
 
                 var voiceChannel = (user as SocketGuildUser)?.VoiceChannel
-                                   ?? throw new UserNotInVoiceChannelException();
+                    ?? throw new UserNotInVoiceChannelException();
 
-                var usersList            = voiceChannel.Users.Where(x => !x.Username.Equals(Context.User.Username));
+                var usersList = voiceChannel.Users.Where(x => !x.Username.Equals(Context.User.Username));
                 var channelMentionString = string.Join(" ", usersList.Select(x => x.Mention));
 
                 await Context.Channel.SendMessageAsync(channelMentionString);

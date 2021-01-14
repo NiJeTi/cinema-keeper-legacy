@@ -11,7 +11,7 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Modules
 {
-    public class LockModule : ModuleBase<SocketCommandContext>
+    internal class LockModule : ModuleBase<SocketCommandContext>
     {
         private readonly IExceptionShield<SocketCommandContext> _shield;
 
@@ -29,7 +29,7 @@ namespace CinemaKeeper.Service.Modules
             await _shield.Protect(Context, async () =>
             {
                 var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel
-                                   ?? throw new UserNotInVoiceChannelException();
+                    ?? throw new UserNotInVoiceChannelException();
 
                 await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = voiceChannel.Users.Count);
 
@@ -46,7 +46,7 @@ namespace CinemaKeeper.Service.Modules
             await _shield.Protect(Context, async () =>
             {
                 var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel
-                                   ?? throw new UserNotInVoiceChannelException();
+                    ?? throw new UserNotInVoiceChannelException();
 
                 var textChannel = Context.Channel;
 
@@ -76,8 +76,8 @@ namespace CinemaKeeper.Service.Modules
             const int maxUsersLimit = 99;
 
             return value >= currentUsersCount
-                   && value >= minUsersLimit
-                   && value <= maxUsersLimit;
+                && value >= minUsersLimit
+                && value <= maxUsersLimit;
         }
     }
 }

@@ -11,7 +11,7 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Modules
 {
-    public class UnlockModule : ModuleBase<SocketCommandContext>
+    internal class UnlockModule : ModuleBase<SocketCommandContext>
     {
         private readonly IExceptionShield<SocketCommandContext> _shield;
 
@@ -29,7 +29,7 @@ namespace CinemaKeeper.Service.Modules
             await _shield.Protect(Context, async () =>
             {
                 var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel
-                                   ?? throw new UserNotInVoiceChannelException();
+                    ?? throw new UserNotInVoiceChannelException();
 
                 await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = null);
 

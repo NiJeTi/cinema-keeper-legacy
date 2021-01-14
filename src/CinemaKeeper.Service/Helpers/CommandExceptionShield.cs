@@ -9,7 +9,7 @@ using Serilog;
 
 namespace CinemaKeeper.Service.Helpers
 {
-    public class CommandExceptionShield : IExceptionShield<SocketCommandContext>
+    internal class CommandExceptionShield : IExceptionShield<SocketCommandContext>
     {
         public async Task Protect(SocketCommandContext context, Func<Task> action)
         {
@@ -23,8 +23,7 @@ namespace CinemaKeeper.Service.Helpers
             }
             catch (Exception e)
             {
-                await context.Channel.SendMessageAsync("Oops... Something went wrong.");
-                Log.Debug(e.Message);
+                Log.Warning(e, "Unexpected Error.");
             }
         }
     }
