@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using CinemaKeeper.Service.Exceptions;
@@ -35,7 +36,7 @@ namespace CinemaKeeper.Service.Modules
                     ?? throw new UserNotInVoiceChannelException();
 
                 var usersList = voiceChannel.Users.Where(x => !x.Username.Equals(Context.User.Username));
-                var channelMentionString = string.Join(" ", usersList.Select(x => x.Mention));
+                var channelMentionString = string.Join(Environment.NewLine, usersList.Select(x => x.Mention));
 
                 await Context.Channel.SendMessageAsync(channelMentionString);
 
