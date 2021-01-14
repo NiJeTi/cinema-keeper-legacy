@@ -30,4 +30,4 @@ jobs:
           script: |
             cd ${{ secrets.SERVER_DEPLOY_PATH }}
             chmod +x ./deploy_service.sh
-            ./deploy_service.sh ${{ github.actor }} ${{ secrets.GITHUB_TOKEN }}
+            ./deploy_service.sh ${{ github.actor }} ${{ secrets.CR_PAT }}
