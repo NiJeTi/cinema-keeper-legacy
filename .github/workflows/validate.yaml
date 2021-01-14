@@ -13,7 +13,7 @@ env:
   PROJECT_DIR: ./src/CinemaKeeper.Service
 
 jobs:
-  inspect:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,18 +39,17 @@ jobs:
 
       - name: Run inspection
         working-directory: ${{ env.SOURCE_DIR }}
-        run: dotnet tool run jb inspectcode ${{ env.SLN_NAME }} -s=HINT -o="Inspection results.xml"
+        run: dotnet tool run jb inspectcode ${{ env.SLN_NAME }} -s=Hint -o="inspection-results.xml"
 
-      - uses: actions/upload-artifact@v2
+      - uses: glassechidna/resharper-action@master
+        with:
+          report: ${{ env.SOURCE_DIR }}/inspection-results.xml
+
+      - name: Upload inspection results
+        uses: actions/upload-artifact@v2
         with:
           name: 'Inspection results'
-          path: 'src/Inspection results.xml'
+          path: 'src/inspection-results.xml'
 
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Build
-      run: dotnet build ${{ env.PROJECT_DIR }}
+      - name: Build
+        run: dotnet build ${{ env.PROJECT_DIR }}
