@@ -19,11 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup .NET Core 3.1
-        uses: actions/setup-dotnet@v1
-        with: 
-          dotnet-version: 3.1.x
-
       - name: Setup .NET 5
         uses: actions/setup-dotnet@v1
         with: 
@@ -39,17 +34,17 @@ jobs:
 
       - name: Run inspection
         working-directory: ${{ env.SOURCE_DIR }}
-        run: dotnet tool run jb inspectcode ${{ env.SLN_NAME }} -s=SUGGESTION -o="inspection-results.xml"
+        run: dotnet tool run jb inspectcode ${{ env.SLN_NAME }} -s=Hint -o="inspection-results.xml"
 
       - uses: glassechidna/resharper-action@master
         with:
           report: ${{ env.SOURCE_DIR }}/inspection-results.xml
 
-      # - name: Upload inspection results
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: 'Inspection results'
-      #     path: 'src/inspection-results.xml'
+      - name: Upload inspection results
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'Inspection results'
+          path: 'src/inspection-results.xml'
 
       - name: Build
         run: dotnet build ${{ env.PROJECT_DIR }}
