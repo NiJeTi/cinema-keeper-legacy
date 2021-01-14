@@ -8,6 +8,8 @@ on:
   workflow_dispatch:
 
 env:
+  SOURCE_DIR: ./src
+  SLN_NAME: CinemaKeeper.sln
   PROJECT_DIR: ./src/CinemaKeeper.Service
 
 jobs:
@@ -19,4 +21,28 @@ jobs:
 
     - name: Build
       run: dotnet build ${{ env.PROJECT_DIR }}
-    
+
+  inspect:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup custom .NET version for inspect tool
+        uses: actions/setup-dotnet@v1
+        with: 
+          dotnet-version: 3.1
+
+      - name: Set working directory
+        run: cd ${{ env.SOURCE_DIR }}
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Run inspection
+        run: dotnet tool run jb inspectcode ${{ env.SLN_NAME }} -s=HINT -o="Inspection results.html" -f=Html
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: 'Inspection results'
+          path: 'Inspection results.html'
