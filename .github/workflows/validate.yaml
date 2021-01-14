@@ -44,7 +44,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: 'Inspection results'
-          path: 'src/Inspection results.html'
+          path: 'src/Inspection results.xml'
 
   build:
     runs-on: ubuntu-latest
