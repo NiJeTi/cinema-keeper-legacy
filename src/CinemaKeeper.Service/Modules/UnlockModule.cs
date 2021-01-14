@@ -17,11 +17,11 @@ namespace CinemaKeeper.Service.Modules
         public async Task Unlock()
         {
             var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel;
-            
+
             if (voiceChannel is null)
             {
                 await Context.Channel.SendMessageAsync("User must be in a voice channel to use this command.");
-                
+
                 return;
             }
 
