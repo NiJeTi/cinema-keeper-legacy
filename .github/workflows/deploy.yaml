@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           target: ${{ secrets.SERVER_DEPLOY_PATH }}
           overwrite: true
-          source: "cd/deploy_service.sh,cd/docker-compose.yaml"
+          source: "cd/deploy_service.sh"
           strip_components: 1
 
       - name: Execute main deployment script
