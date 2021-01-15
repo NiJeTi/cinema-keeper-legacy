@@ -75,7 +75,7 @@ namespace CinemaKeeper.Service.Modules
             });
         }
 
-        private MentionType DefineMentionType(string rawMention)
+        private static MentionType DefineMentionType(string rawMention)
         {
             if (Regex.IsMatch(rawMention, @"^\d{18}$"))
                 return MentionType.Id;
