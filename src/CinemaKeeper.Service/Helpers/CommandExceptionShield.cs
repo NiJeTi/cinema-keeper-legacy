@@ -27,6 +27,10 @@ namespace CinemaKeeper.Service.Helpers
             {
                 await context.Channel.SendMessageAsync("User must be in a voice channel to use this command.");
             }
+            catch (WrongMentionException)
+            {
+                await context.Channel.SendMessageAsync("Wrong mention!");
+            }
             catch (Exception e)
             {
                 Log.Warning(e, "Unexpected Error.");
