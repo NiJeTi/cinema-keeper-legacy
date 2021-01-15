@@ -25,7 +25,11 @@ namespace CinemaKeeper.Service.Helpers
             }
             catch (UserNotInVoiceChannelException)
             {
-                await context.Channel.SendMessageAsync("User must be in a voice channel to use this command.");
+                await context.Channel.SendMessageAsync("User must be in a voice channel to use this command. Enter voice chat or use echanced version of command.");
+            }
+            catch (WrongMentionException)
+            {
+                await context.Channel.SendMessageAsync("Wrong mention. Use voice channel ID or type it's name.");
             }
             catch (Exception e)
             {
