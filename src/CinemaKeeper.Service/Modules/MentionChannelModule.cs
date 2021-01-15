@@ -58,7 +58,7 @@ namespace CinemaKeeper.Service.Modules
                 SocketVoiceChannel voiceChannel = DefineMentionType(rawMention) switch
                 {
                     MentionType.Id => voiceChannels.Single(x => x.Id.Equals(ulong.Parse(rawMention))),
-                    MentionType.Wildcard => voiceChannels?.FirstOrDefault(x => Regex.IsMatch(x.Name, rawMention))
+                    MentionType.Wildcard => voiceChannels.FirstOrDefault(x => Regex.IsMatch(x.Name, rawMention))
                         ?? throw new ChannelNotFoundException(),
                     _ => throw new WrongMentionException()
                 };
@@ -66,7 +66,7 @@ namespace CinemaKeeper.Service.Modules
                 var usersList = voiceChannel.Users.Where(x => !x.Username.Equals(Context.User.Username));
                 var channelMentionString = string.Join(Environment.NewLine, usersList.Select(x => x.Mention));
 
-                if (channelMentionString.Equals(string.Empty))
+                if (string.IsNullOrEmpty(channelMentionString))
                     return;
 
                 await Context.Channel.SendMessageAsync(channelMentionString);
