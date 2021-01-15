@@ -25,8 +25,8 @@ if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
     docker rm $CONTAINER_NAME
 fi
 
-docker pull $IMAGE_NAME
 # Create new container and run it
+docker pull $IMAGE_NAME
 docker run -d \
     --name $CONTAINER_NAME \
     -e DOTNET_ENVIRONMENT=Production \
