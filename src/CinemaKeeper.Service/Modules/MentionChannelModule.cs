@@ -36,7 +36,7 @@ namespace CinemaKeeper.Service.Modules
                 var voiceChannel = (user as SocketGuildUser)?.VoiceChannel
                     ?? throw new UserNotInVoiceChannelException();
 
-                var usersList = voiceChannel.Users.Where(x => !x.Username.Equals(Context.User.Username));
+                var usersList = voiceChannel.Users.Where(x => !x.Username.Equals(user.Username));
                 var channelMentionString = string.Join(Environment.NewLine, usersList.Select(x => x.Mention));
 
                 await Context.Channel.SendMessageAsync(channelMentionString);
@@ -53,18 +53,21 @@ namespace CinemaKeeper.Service.Modules
         {
             await _shield.Protect(Context, async () =>
             {
-                var user = Context.User;
                 var voiceChannels = Context.Guild.VoiceChannels!;
 
                 SocketVoiceChannel voiceChannel = DefineMentionType(rawMention) switch
                 {
                     MentionType.Id => voiceChannels.Single(x => x.Id.Equals(ulong.Parse(rawMention))),
-                    MentionType.Wildcard => voiceChannels.First(x => Regex.IsMatch(x.Name, @$"^{rawMention}")),
+                    MentionType.Wildcard => voiceChannels?.FirstOrDefault(x => Regex.IsMatch(x.Name, rawMention))
+                        ?? throw new ChannelNotFoundException(),
                     _ => throw new WrongMentionException()
                 };
 
                 var usersList = voiceChannel.Users.Where(x => !x.Username.Equals(Context.User.Username));
                 var channelMentionString = string.Join(Environment.NewLine, usersList.Select(x => x.Mention));
+
+                if (channelMentionString.Equals(string.Empty))
+                    return;
 
                 await Context.Channel.SendMessageAsync(channelMentionString);
 
@@ -77,7 +80,7 @@ namespace CinemaKeeper.Service.Modules
             if (Regex.IsMatch(rawMention, @"^\d{18}$"))
                 return MentionType.Id;
 
-            if (Regex.IsMatch(rawMention, @"^[\w\s]+$"))
+            if (Regex.IsMatch(rawMention, @"^[a-zA-Zа-яА-Я\s]+$"))
                 return MentionType.Wildcard;
 
             return default(MentionType);
