@@ -23,9 +23,9 @@ if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
     fi
 
     docker rm $CONTAINER_NAME
-    docker rmi $IMAGE_NAME
 fi
 
+docker pull $IMAGE_NAME
 # Create new container and run it
 docker run -d \
     --name $CONTAINER_NAME \
