@@ -24,7 +24,7 @@ It can:
 3. Such a very good boi-bot will cast every user in the channel
 
 #### Variant B:
-1. Type `!castv <name>` where *name* can either a full name of a voice channel or just a part of it
+1. Type `!castv <name>` where *name* can be either a full name of a voice channel or just a part of it
 2. Such a very good boi-bot will cast every user in the channel
 
 #### Variant C (for nerds):
