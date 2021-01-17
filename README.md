@@ -18,6 +18,20 @@ It can:
 
 ### Cast voice channel
 
+#### Variant A:
 1. Enter desired voice channel
 2. Type `!castv`
 3. Such a very good boi-bot will cast every user in the channel
+
+#### Variant B:
+1. Type `!castv <name>` where *name* can either a full name of a voice channel or just a part of it
+2. Such a very good boi-bot will cast every user in the channel
+
+#### Variant C (for nerds):
+1. Go to Discord settings - Appearance
+2. Scroll down and enable *Developer Mode*
+3. Go back to chats list
+4. Right click on the name of desired voice channel
+5. Click *Copy ID*
+6. Type `!castv <id>`
+7. Such a very good boi-bot will cast every user in the channel
