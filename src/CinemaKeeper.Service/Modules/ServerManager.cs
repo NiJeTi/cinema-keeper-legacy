@@ -143,14 +143,14 @@ namespace CinemaKeeper.Service.Modules
 
                 }
 
-                public DateTime ?completed_at;
-                public int ?id;
-                public string ?region_slug;
-                public int ?region_id;
-                public string ?resource_type;
-                public DateTime ?started_at;
-                public string ?status;
-                public string ?type;
+                public DateTime ?completed_at{get;set;}
+                public int ?id{get;set;}
+                public string ?region_slug{get;set;}
+                public int ?region_id{get;set;}
+                public string ?resource_type{get;set;}
+                public DateTime ?started_at{get;set;}
+                public string ?status{get;set;}
+                public string ?type{get;set;}
             }
         }
 
