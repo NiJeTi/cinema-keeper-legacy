@@ -134,8 +134,12 @@ namespace CinemaKeeper.Service.Modules
 
             }
 
-            public struct Action
+            public class Action
             {
+
+                public Action(){
+
+                }
 
                 public DateTime completed_at;
                 public int id;
