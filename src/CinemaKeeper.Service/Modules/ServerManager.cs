@@ -99,21 +99,21 @@ namespace CinemaKeeper.Service.Modules
                 {
                     case TypeCommand.start:
                         return new Command(Server, TypeCommand.start.ToString());
-                        break;
+                      
                     case TypeCommand.reboot:
                         return new Command(Server, TypeCommand.reboot.ToString());
-                        break;
+                        
                     default:
                         await textChannel.SendMessageAsync($"Пшёл в жопу, не такой команды для сервера {Server.Name}");
                         throw new TheCommandForTheServerIsNotExit();
-                        break;
+                     
                 }
 
             }
         }
 
 
-        public async Task<ResCommand> SendCommand(Command command)
+        private async Task<ResCommand> SendCommand(Command command)
         {
             var client = new RestClient(baseUrl);
             var request = new RestRequest($"{command.Server.ID}/actions", DataFormat.Json).AddHeader("Authorization",
@@ -126,29 +126,31 @@ namespace CinemaKeeper.Service.Modules
 
 
         [Serializable]
-        public class ResCommand
+        private class ResCommand
         {
-            public Action action;
+            private CommandAction action;
             public ResCommand()
             {
-
+                action = new CommandAction();
             }
 
-            public class Action
+            [Serializable]
+            private class CommandAction
             {
 
-                public Action(){
+                public CommandAction()
+                {
 
                 }
 
-                public DateTime completed_at;
-                public int id;
-                public string region_slug;
-                public int region_id;
-                public string resource_type;
-                public DateTime started_at;
-                public string status;
-                public string type;
+                public DateTime ?completed_at;
+                public int ?id;
+                public string ?region_slug;
+                public int ?region_id;
+                public string ?resource_type;
+                public DateTime ?started_at;
+                public string ?status;
+                public string ?type;
             }
         }
 
