@@ -128,14 +128,14 @@ namespace CinemaKeeper.Service.Modules
         [Serializable]
         private class ResCommand
         {
-            private CommandAction action;
+            public CommandAction action;
             public ResCommand()
             {
                 action = new CommandAction();
             }
 
             [Serializable]
-            private class CommandAction
+            public class CommandAction
             {
 
                 public CommandAction()
