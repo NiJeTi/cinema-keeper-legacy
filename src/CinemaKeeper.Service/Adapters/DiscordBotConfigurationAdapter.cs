@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using CinemaKeeper.Service.Configurations;
@@ -9,6 +10,7 @@ using Discord.WebSocket;
 
 namespace CinemaKeeper.Service.Adapters
 {
+    [SuppressMessage("Style", "IDE0052")]
     internal class DiscordBotConfigurationAdapter : IAdapter<DiscordSocketConfig>, IAdapter<CommandServiceConfig>
     {
         private readonly DiscordBotConfiguration _discordBotConfiguration;
