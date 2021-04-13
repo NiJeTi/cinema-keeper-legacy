@@ -24,8 +24,7 @@ namespace CinemaKeeper.Service.Modules
         [RequireBotPermission(GuildPermission.ManageChannels)]
         [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
         [Command("lock")]
-        public async Task Lock()
-        {
+        public async Task Lock() =>
             await _shield.Protect(Context, async () =>
             {
                 var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel
@@ -35,14 +34,12 @@ namespace CinemaKeeper.Service.Modules
 
                 Log.Debug($"Locked channel {voiceChannel} for {voiceChannel.UserLimit} user(s).");
             });
-        }
 
         [RequireContext(ContextType.Guild)]
         [RequireBotPermission(GuildPermission.ManageChannels | GuildPermission.ManageMessages)]
         [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
         [Command("lock")]
-        public async Task Lock([Remainder] string usersLimitRaw)
-        {
+        public async Task Lock([Remainder] string usersLimitRaw) =>
             await _shield.Protect(Context, async () =>
             {
                 var voiceChannel = (Context.User as SocketGuildUser)?.VoiceChannel
@@ -68,7 +65,6 @@ namespace CinemaKeeper.Service.Modules
 
                 Log.Debug($"Locked channel {voiceChannel} for {voiceChannel.UserLimit} user(s).");
             });
-        }
 
         private static bool IsUsersLimitValid(int value, int currentUsersCount)
         {

@@ -29,27 +29,5 @@ jobs:
         with: 
           dotnet-version: 5.0.x
 
-      - name: Restore tools
-        working-directory: ${{ env.SOURCE_DIR }}
-        run: dotnet tool restore
-
-      - name: Restore project dependencies
-        working-directory: ${{ env.SOURCE_DIR }}
-        run: dotnet restore
-
-      - name: Run inspection
-        working-directory: ${{ env.SOURCE_DIR }}
-        run: dotnet tool run jb inspectcode ${{ env.SLN_NAME }} -s=Hint -o="inspection-results.xml"
-
-      - uses: glassechidna/resharper-action@master
-        with:
-          report: ${{ env.SOURCE_DIR }}/inspection-results.xml
-
-      - name: Upload inspection results
-        uses: actions/upload-artifact@v2
-        with:
-          name: 'Inspection results'
-          path: 'src/inspection-results.xml'
-
       - name: Build
         run: dotnet build ${{ env.PROJECT_DIR }}

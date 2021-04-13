@@ -55,6 +55,8 @@ namespace CinemaKeeper.Service.Services
         {
             _client.Dispose();
             (_commandService as IDisposable).Dispose();
+
+            base.Dispose();
         }
 
         protected override Task ExecuteAsync(CancellationToken cancellationToken) => Task.CompletedTask;
@@ -72,7 +74,7 @@ namespace CinemaKeeper.Service.Services
 
         private async Task HandleCommand(SocketMessage message)
         {
-            if (!(message is SocketUserMessage command))
+            if (message is not SocketUserMessage command)
                 return;
 
             var cmdStartPos = 0;
@@ -80,7 +82,9 @@ namespace CinemaKeeper.Service.Services
             if (!command.HasStringPrefix(_botConfiguration.Prefix, ref cmdStartPos)
                 || command.HasMentionPrefix(_client.CurrentUser, ref cmdStartPos)
                 || command.Author.IsBot)
+            {
                 return;
+            }
 
             var commandContext = new SocketCommandContext(_client, command);
 

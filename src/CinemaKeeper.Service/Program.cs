@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using CinemaKeeper.Service.Configurations;
@@ -12,6 +13,7 @@ using Serilog;
 
 namespace CinemaKeeper.Service
 {
+    [SuppressMessage("Reliability", "CA2000", Scope = "type", Target = "~T:CinemaKeeper.Service.Program")]
     internal static class Program
     {
         public static void Main(string[] args)
