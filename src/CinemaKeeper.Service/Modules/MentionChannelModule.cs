@@ -44,7 +44,7 @@ namespace CinemaKeeper.Service.Modules
                 await Context.Channel.SendMessageAsync(channelMentionString);
 
                 Log.Debug($"Mentioned all users in {voiceChannel}.");
-            }).ConfigureAwait(true);
+            });
 
         [RequireContext(ContextType.Guild)]
         [RequireBotPermission(GuildPermission.SendMessages)]
@@ -60,7 +60,7 @@ namespace CinemaKeeper.Service.Modules
                     MentionType.Id =>
                         voiceChannels.Single(x => x.Id.Equals(ulong.Parse(rawMention, CultureInfo.InvariantCulture))),
                     MentionType.Wildcard =>
-                        voiceChannels.FirstOrDefault(x => Regex.IsMatch(x.Name, rawMention))
+                        voiceChannels.FirstOrDefault(x => Regex.IsMatch(x.Name, rawMention, RegexOptions.IgnoreCase))
                         ?? throw new ChannelNotFoundException(),
                     _ => throw new WrongMentionException()
                 };
@@ -76,13 +76,13 @@ namespace CinemaKeeper.Service.Modules
                 await Context.Channel.SendMessageAsync(channelMentionString);
 
                 Log.Debug($"Mentioned all users in {voiceChannel}.");
-            }).ConfigureAwait(true);
+            });
 
         private static MentionType DefineMentionType(string rawMention) =>
             Regex.IsMatch(rawMention, @"^\d{18}$")
                 ? MentionType.Id
                 : Regex.IsMatch(rawMention, @"^[a-zA-Zа-яА-Я\s]+$")
                     ? MentionType.Wildcard
-                    : default;
+                    : MentionType.None;
     }
 }
