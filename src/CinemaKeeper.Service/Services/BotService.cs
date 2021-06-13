@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CinemaKeeper.Service.Configurations;
+using CinemaKeeper.Service.Exceptions;
+using CinemaKeeper.Service.Resources;
 
 using Discord;
 using Discord.Commands;
@@ -11,6 +13,7 @@ using Discord.WebSocket;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Localization;
 
 using Serilog;
 
@@ -19,6 +22,7 @@ namespace CinemaKeeper.Service.Services
     internal class BotService : BackgroundService
     {
         private readonly DiscordBotConfiguration _botConfiguration;
+        private readonly IStringLocalizer<Localization> _localizer;
 
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commandService;
@@ -32,6 +36,7 @@ namespace CinemaKeeper.Service.Services
             _commandService = services.GetRequiredService<CommandService>();
 
             _botConfiguration = services.GetRequiredService<DiscordBotConfiguration>();
+            _localizer = services.GetRequiredService<IStringLocalizer<Localization>>();
 
             _client.MessageReceived += HandleCommand;
             _commandService.CommandExecuted += OnCommandExecuted;
@@ -61,14 +66,17 @@ namespace CinemaKeeper.Service.Services
 
         protected override Task ExecuteAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-        private static async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context,
-            IResult result)
+        private async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
-            if (!string.IsNullOrEmpty(result.ErrorReason))
-                await context.Channel.SendMessageAsync(result.ErrorReason);
+            if (!result.IsSuccess)
+            {
+                var response = GetErrorResponse(result);
 
-            var commandName = command.IsSpecified ? command.Value.Name : "unknown command";
+                if (!string.IsNullOrEmpty(response))
+                    await context.Channel.SendMessageAsync(response);
+            }
 
+            var commandName = command.IsSpecified ? command.Value.Name : "UNKNOWN COMMAND";
             Log.Information($"Executed \"{commandName}\" for {context.User}");
         }
 
@@ -77,18 +85,51 @@ namespace CinemaKeeper.Service.Services
             if (message is not SocketUserMessage command)
                 return;
 
-            var cmdStartPos = 0;
+            var argPos = 0;
 
-            if (!command.HasStringPrefix(_botConfiguration.Prefix, ref cmdStartPos)
-                || command.HasMentionPrefix(_client.CurrentUser, ref cmdStartPos)
-                || command.Author.IsBot)
-            {
+            var isInvalidCommand = !command.HasStringPrefix(_botConfiguration.Prefix, ref argPos)
+                || command.HasMentionPrefix(_client.CurrentUser, ref argPos)
+                || command.Author.IsBot
+                || command.Content.Length == 1;
+
+            if (isInvalidCommand)
                 return;
-            }
 
             var commandContext = new SocketCommandContext(_client, command);
+            await _commandService.ExecuteAsync(commandContext, argPos, _services);
+        }
 
-            await _commandService.ExecuteAsync(commandContext, cmdStartPos, _services);
+        private string? GetErrorResponse(IResult result)
+        {
+            switch (result.Error)
+            {
+                case CommandError.UnknownCommand:
+                    return null;
+
+                case CommandError.ParseFailed:
+                    return _localizer["errors.parseFailed"];
+
+                case CommandError.BadArgCount:
+                    return _localizer["errors.invalidNumberOfArguments"];
+
+                case CommandError.UnmetPrecondition:
+                    return _localizer[result.ErrorReason];
+
+                case CommandError.Exception:
+                    var executeResult = (result as ExecuteResult?)!;
+                    var exception = executeResult.Value.Exception;
+
+                    return exception switch
+                    {
+                        InvalidUserLimitException => _localizer["errors.invalidUserLimit"],
+                        InvalidVoiceChannelIdentifierException => _localizer["errors.invalidVoiceChannelIdentifier"],
+                        VoiceChannelNotFoundException => _localizer["errors.voiceChannelNotFound"],
+                        _ => _localizer["errors.unknown"]
+                    };
+
+                default:
+                    return _localizer["errors.unknown"];
+            }
         }
     }
 }

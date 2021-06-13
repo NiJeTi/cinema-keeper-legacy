@@ -42,14 +42,14 @@ namespace CinemaKeeper.Service
                 {
                     services.AddConfigurations(hostContext.Configuration);
 
-                    var discordBotConfiguration = services
+                    var discordBotConfiguration = (services
                        .Single(s => s.ServiceType == typeof(DiscordBotConfiguration))
-                       .ImplementationInstance as DiscordBotConfiguration;
+                       .ImplementationInstance as DiscordBotConfiguration)!;
 
                     services
-                       .AddDiscordClient(discordBotConfiguration!)
-                       .AddCommandService(discordBotConfiguration!)
-                       .AddDependencies();
+                       .AddDiscordClient(discordBotConfiguration)
+                       .AddCommandService(discordBotConfiguration)
+                       .AddLocalization();
 
                     services.AddHostedService<BotService>();
                     services.AddHostedService<DiscordLoggingService>();

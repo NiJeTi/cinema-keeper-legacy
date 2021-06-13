@@ -14,4 +14,19 @@
         <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
         <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\Localization.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\Localization.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Localization.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>
