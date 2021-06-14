@@ -41,6 +41,7 @@ jobs:
     - name: Build and upload Docker image
       uses: docker/build-push-action@v2
       with:
+        context: .
         file: ${{ env.PROJECT_DIR }}/Dockerfile
         push: true
         tags:
