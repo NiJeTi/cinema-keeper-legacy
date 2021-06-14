@@ -16,6 +16,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+        versionSpec: '5.x'
+
+    - uses: gittools/actions/gitversion/execute@v0.9.7
+      id: calculate-version
+      with:
+        useConfigFile: true
 
     - uses: docker/setup-qemu-action@v1
     - uses: docker/setup-buildx-action@v1
@@ -32,4 +43,5 @@ jobs:
       with:
         context: ${{ env.PROJECT_DIR }}
         push: true
-        tags: ghcr.io/nijeti/cinema-keeper:latest
+        tags:
+          ghcr.io/nijeti/cinema-keeper:latest,ghcr.io/nijeti/cinema-keeper:${{ steps.calculate-version.outputs.semVer }}
