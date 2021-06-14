@@ -2,5 +2,5 @@
 
 namespace CinemaKeeper.Service.Exceptions
 {
-    public class WrongMentionException : Exception { }
+    public class VoiceChannelNotFoundException : Exception { }
 }

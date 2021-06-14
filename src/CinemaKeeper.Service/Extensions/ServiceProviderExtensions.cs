@@ -1,6 +1,5 @@
 ﻿using CinemaKeeper.Service.Adapters;
 using CinemaKeeper.Service.Configurations;
-using CinemaKeeper.Service.Helpers;
 
 using Discord.Commands;
 using Discord.WebSocket;
@@ -42,13 +41,6 @@ namespace CinemaKeeper.Service.Extensions
             var service = new CommandService(commandServiceConfig);
 
             return services.AddSingleton(service);
-        }
-
-        public static IServiceCollection AddDependencies(this IServiceCollection services)
-        {
-            services.AddTransient<IExceptionShield<SocketCommandContext>, CommandExceptionShield>();
-
-            return services;
         }
     }
 }

@@ -13,8 +13,6 @@ env:
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
-    outputs:
-      semVer: ${{ steps.calculate-version.outputs.semVer }}
 
     steps:
     - uses: actions/checkout@v2
@@ -47,13 +45,7 @@ jobs:
         push: true
         tags:
           ghcr.io/nijeti/cinema-keeper:latest,ghcr.io/nijeti/cinema-keeper:${{ steps.calculate-version.outputs.semVer }}
-        
-  create-release-notes:
-    runs-on: ubuntu-latest
-    needs: build-and-upload
-    env:
-      SEMVER: ${{ needs.build-and-upload.outputs.semVer }}
 
-    steps:
-      - run: |
-          echo $SEMVER
+    - run: |
+        git tag ${{ steps.calculate-version.outputs.semVer }}
+        git push --tags

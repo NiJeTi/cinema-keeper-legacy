@@ -1,9 +1,9 @@
 ﻿namespace CinemaKeeper.Service.Helpers
 {
-    public enum MentionType
+    internal enum VoiceChannelIdType
     {
         None,
-        Id,
-        Wildcard
+        Wildcard,
+        Id
     }
 }
