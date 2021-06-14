@@ -116,8 +116,8 @@ namespace CinemaKeeper.Service.Services
                     return _localizer[result.ErrorReason];
 
                 case CommandError.Exception:
-                    var executeResult = (result as ExecuteResult?)!;
-                    var exception = executeResult.Value.Exception;
+                    var executeResult = (ExecuteResult) result;
+                    var exception = executeResult.Exception;
 
                     return exception switch
                     {
