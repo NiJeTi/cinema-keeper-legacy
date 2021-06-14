@@ -20,11 +20,11 @@ It can:
 
 #### Variant A:
 1. Enter desired voice channel
-2. Type `!mentv`
+2. Type `!cast`
 3. Such a very good boi-bot will mention every user in the channel
 
 #### Variant B:
-1. Type `!mentv <name>` where *name* can be either a full name of a voice channel or just a part of it
+1. Type `!cast <name>` where *name* can be either a full name of a voice channel or just a part of it
 2. Such a very good boi-bot will mention every user in the channel
 
 #### Variant C (for nerds):
@@ -33,5 +33,5 @@ It can:
 3. Go back to chats list
 4. Right click on the name of desired voice channel
 5. Click *Copy ID*
-6. Type `!mentv <id>`
+6. Type `!cast <id>`
 7. Such a very good boi-bot will mention every user in the channel

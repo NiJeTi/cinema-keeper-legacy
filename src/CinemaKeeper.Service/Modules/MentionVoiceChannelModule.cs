@@ -20,7 +20,7 @@ namespace CinemaKeeper.Service.Modules
     {
         [RequireUserPermission(GuildPermission.Connect)]
         [UserMustBeInVoiceChannel]
-        [Command("mentv")]
+        [Command("cast")]
         public async Task MentionVoiceChannel()
         {
             var user = (SocketGuildUser) Context.User;
@@ -30,7 +30,7 @@ namespace CinemaKeeper.Service.Modules
             Log.Debug($"Mentioned all users in {voiceChannel}.");
         }
 
-        [Command("mentv")]
+        [Command("cast")]
         public async Task MentionVoiceChannel([Remainder] string rawId)
         {
             var user = (SocketGuildUser) Context.User;
