@@ -7,6 +7,9 @@ on:
       - 'src/**'
   workflow_dispatch:
 
+env:
+  PROJECT_DIR: ./src/CinemaKeeper.Service
+
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
@@ -32,10 +35,13 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.CR_PAT }}
 
+    - name: Publish app
+      run: dotnet publish --configuration Release --output ./build ${{ env.PROJECT_DIR }}
+
     - name: Build and upload Docker image
       uses: docker/build-push-action@v2
       with:
-        file: ./src/CinemaKeeper.Service/Dockerfile
+        file: ${{ env.PROJECT_DIR }}/Dockerfile
         push: true
         tags:
           ghcr.io/nijeti/cinema-keeper:latest,ghcr.io/nijeti/cinema-keeper:${{ steps.calculate-version.outputs.semVer }}
