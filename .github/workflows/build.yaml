@@ -45,3 +45,7 @@ jobs:
         push: true
         tags:
           ghcr.io/nijeti/cinema-keeper:latest,ghcr.io/nijeti/cinema-keeper:${{ steps.calculate-version.outputs.semVer }}
+
+    - run: |
+        git tag ${{ steps.calculate-version.outputs.semVer }}
+        git push --tags
