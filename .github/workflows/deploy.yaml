@@ -19,7 +19,6 @@ jobs:
           target: ${{ secrets.SERVER_DEPLOY_PATH }}
           overwrite: true
           source: "docker-compose.yaml"
-          strip_components: 1
 
       - name: Execute main deployment script
         uses: appleboy/ssh-action@master
