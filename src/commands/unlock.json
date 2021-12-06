@@ -1,0 +1,5 @@
+{
+  "type": 1,
+  "name": "unlock",
+  "description": "Remove user limit for current voice channel"
+}

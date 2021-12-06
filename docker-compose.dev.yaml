@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  cinema-keeper:
+    profiles:
+      - donotstart
+
+  postgres:
+    ports:
+      - 5432:5432

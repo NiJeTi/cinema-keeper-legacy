@@ -1,14 +1,11 @@
-[*]
-charset = utf-8
+[*.sln]
+indent_style = tab
 
-max_line_length = 120
-end_of_line = crlf
-trim_trailing_whitespace = true
-insert_final_newline = true
+[*.{csproj,shproj,proj,projitems}]
+indent_size = 2
 
-indent_style = space
-indent_size = 4
-tab_width = 4
+[*.{config,props,targets,nuspec,resx,ruleset}]
+indent_size = 2
 
 [*.cs]
 #### CODE STYLE ####
@@ -153,23 +150,6 @@ dotnet_naming_symbols.types_and_namespaces_symbols.applicable_kinds = namespace,
 dotnet_naming_symbols.type_parameters_symbols.applicable_accessibilities = *
 dotnet_naming_symbols.type_parameters_symbols.applicable_kinds = type_parameter
 
-dotnet_diagnostic.SA1300.severity = none
-dotnet_diagnostic.SA1301.severity = none
-dotnet_diagnostic.SA1302.severity = none
-dotnet_diagnostic.SA1303.severity = none
-dotnet_diagnostic.SA1304.severity = none
-dotnet_diagnostic.SA1305.severity = none
-dotnet_diagnostic.SA1306.severity = none
-dotnet_diagnostic.SA1307.severity = none
-dotnet_diagnostic.SA1308.severity = none
-dotnet_diagnostic.SA1309.severity = none
-dotnet_diagnostic.SA1310.severity = none
-dotnet_diagnostic.SA1311.severity = none
-dotnet_diagnostic.SA1312.severity = none
-dotnet_diagnostic.SA1313.severity = none
-dotnet_diagnostic.SA1314.severity = none
-dotnet_diagnostic.SA1316.severity = none
-
 # 'this.' qualifiers
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
@@ -201,11 +181,11 @@ dotnet_style_prefer_inferred_tuple_names = true:suggestion
 dotnet_style_prefer_inferred_anonymous_type_member_names = false:warning
 dotnet_style_prefer_auto_properties = true:warning
 dotnet_style_prefer_conditional_expression_over_assignment = true:warning
-dotnet_style_prefer_conditional_expression_over_return = true:warning
+dotnet_style_prefer_conditional_expression_over_return = true:suggestion
 dotnet_style_prefer_compound_assignment = true:suggestion
 dotnet_style_prefer_simplified_interpolation = true:warning
 dotnet_style_prefer_simplified_boolean_expressions = true:warning
-dotnet_diagnostic.IDE0010.severity = warning
+dotnet_diagnostic.IDE0010.severity = none
 dotnet_diagnostic.IDE0050.severity = none
 dotnet_diagnostic.IDE0070.severity = error
 dotnet_diagnostic.IDE0082.severity = error
@@ -216,7 +196,7 @@ csharp_style_deconstructed_variable_declaration = false:none
 csharp_style_prefer_index_operator = true:warning
 csharp_style_prefer_range_operator = true:warning
 csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
-dotnet_diagnostic.IDE0072.severity = warning
+dotnet_diagnostic.IDE0072.severity = suggestion
 
 # Null-checking
 dotnet_style_coalesce_expression = true:error
@@ -265,7 +245,7 @@ dotnet_diagnostic.IDE0005.severity = warning
 dotnet_diagnostic.IDE0035.severity = error
 dotnet_diagnostic.IDE0051.severity = suggestion
 dotnet_diagnostic.IDE0052.severity = silent
-csharp_style_unused_value_expression_statement_preference = discard_variable:suggestion
+csharp_style_unused_value_expression_statement_preference = discard_variable:none
 csharp_style_unused_value_assignment_preference = discard_variable:suggestion
 dotnet_code_quality_unused_parameters = non_public:warning
 dotnet_diagnostic.IDE0079.severity = warning
@@ -325,10 +305,11 @@ dotnet_diagnostic.IDE0076.severity = error
 dotnet_diagnostic.IDE0077.severity = error
 
 #### CODE QUALITY ####
+dotnet_code_quality.api_surface = all
+
 # Design
 dotnet_analyzer_diagnostic.category-design.severity = warning
 dotnet_diagnostic.CA1000.severity = error
-dotnet_diagnostic.CA1008.severity = error
 dotnet_diagnostic.CA1010.severity = suggestion
 dotnet_diagnostic.CA1014.severity = suggestion
 dotnet_diagnostic.CA1016.severity = error
@@ -374,23 +355,21 @@ dotnet_diagnostic.CA1700.severity = none
 dotnet_diagnostic.CA1707.severity = error
 dotnet_diagnostic.CA1708.severity = error
 dotnet_diagnostic.CA1710.severity = error
-dotnet_diagnostic.CA1711.severity = error
 dotnet_diagnostic.CA1712.severity = error
 dotnet_diagnostic.CA1715.severity = error
-dotnet_diagnostic.CA1716.severity = error
+dotnet_diagnostic.CA1716.severity = none
 dotnet_diagnostic.CA1720.severity = none
-dotnet_diagnostic.CA1721.severity = error
 dotnet_diagnostic.CA1724.severity = error
 dotnet_diagnostic.CA1725.severity = error
 
 # Performance
 dotnet_analyzer_diagnostic.category-performance.severity = warning
-dotnet_diagnostic.CA1805.severity = error
+dotnet_diagnostic.CA1805.severity = suggestion
+dotnet_diagnostic.CA1816.severity = suggestion
 dotnet_diagnostic.CA1820.severity = error
 dotnet_diagnostic.CA1821.severity = error
 dotnet_diagnostic.CA1822.severity = suggestion
 dotnet_diagnostic.CA1825.severity = error
-dotnet_diagnostic.CA1834.severity = error
 dotnet_diagnostic.CA1835.severity = suggestion
 dotnet_diagnostic.CA1837.severity = error
 
@@ -399,7 +378,7 @@ dotnet_analyzer_diagnostic.category-publish.severity = warning
 
 # Reliability
 dotnet_analyzer_diagnostic.category-reliability.severity = warning
-dotnet_diagnostic.CA2007.severity = suggestion
+dotnet_diagnostic.CA2007.severity = none
 dotnet_diagnostic.CA2008.severity = suggestion
 dotnet_diagnostic.CA2009.severity = error
 dotnet_diagnostic.CA2011.severity = error
@@ -413,7 +392,6 @@ dotnet_analyzer_diagnostic.category-security.severity = warning
 dotnet_analyzer_diagnostic.category-usage.severity = warning
 dotnet_diagnostic.CA2208.severity = suggestion
 dotnet_diagnostic.CA2211.severity = error
-dotnet_diagnostic.CA2214.severity = error
 dotnet_diagnostic.CA2217.severity = error
 dotnet_diagnostic.CA2241.severity = error
 dotnet_diagnostic.CA2244.severity = error
@@ -423,7 +401,3 @@ dotnet_diagnostic.CA2246.severity = error
 dotnet_diagnostic.CA2247.severity = error
 dotnet_diagnostic.CA2248.severity = error
 dotnet_diagnostic.CA2249.severity = error
-
-[*.json]
-indent_size = 2
-tab_width = 2
