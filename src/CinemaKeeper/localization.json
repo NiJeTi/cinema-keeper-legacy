@@ -1,0 +1,11 @@
+﻿{
+  "errors": {
+    "userMustBeInVoiceChannel": "You must be in a voice channel",
+    "unknown": "Unknown error",
+    "parsingFailed": "Cannot parse one or more arguments",
+    "invalidNumberOfArguments": "Invalid number of arguments",
+    "voiceChannelNotFound": "Voice channel was not found",
+    "invalidUserLimit": "Invalid user limit",
+    "invalidChannelIdentifier": "Invalid voice channel identifier"
+  }
+}

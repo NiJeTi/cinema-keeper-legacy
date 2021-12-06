@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           target: ${{ secrets.SERVER_DEPLOY_PATH }}
           overwrite: true
-          source: "cd/deploy_service.sh"
+          source: "docker-compose.yaml"
           strip_components: 1
 
       - name: Execute main deployment script
@@ -29,5 +29,5 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           script: |
             cd ${{ secrets.SERVER_DEPLOY_PATH }}
-            chmod +x ./deploy_service.sh
-            ./deploy_service.sh ${{ github.actor }} ${{ secrets.CR_PAT }}
+            docker login --username ${{ github.actor }} --password ${{ secrets.CR_PAT }} ghcr.io
+            docker-compose -p prod up -d

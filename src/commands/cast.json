@@ -1,0 +1,17 @@
+{
+  "type": 1,
+  "name": "cast",
+  "description": "Mention all users in specified voice channel",
+  "options": [
+    {
+      "type": 4,
+      "name": "channel",
+      "description": "Channel to mention",
+      "required": true,
+      "autocomplete": true,
+      "channel_types": [
+        2
+      ]
+    }
+  ]
+}
