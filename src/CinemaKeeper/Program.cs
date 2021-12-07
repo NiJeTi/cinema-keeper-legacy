@@ -1,16 +1,17 @@
 using System;
 using System.Reflection;
 
-using CinemaKeeper.Database.Context;
 using CinemaKeeper.Extensions;
+using CinemaKeeper.Persistence;
+using CinemaKeeper.Persistence.Contexts.Quotes;
 using CinemaKeeper.Services;
 using CinemaKeeper.Services.Workers;
 using CinemaKeeper.Settings;
 
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +25,7 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
-        Log.Logger = new LoggerConfiguration().CreateBootstrapLogger();
+        Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
         try
         {
@@ -58,9 +59,6 @@ internal static class Program
 
                 services.AddSingleton<ILocalizationProvider, LocalizationProvider>();
 
-                services.AddDbContext<Postgres>(options =>
-                    options.UseNpgsql(configuration.GetConnectionString("Postgres")));
-
                 services.AddSingleton<DiscordSocketClient>();
 
                 services.AddSingleton(provider =>
@@ -70,6 +68,17 @@ internal static class Program
 
                     return commandService;
                 });
+
+                services.AddSingleton(provider =>
+                {
+                    var interactionService = new InteractionService(provider.GetRequiredService<DiscordSocketClient>());
+                    interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), provider);
+
+                    return interactionService;
+                });
+
+                services.AddSingleton<IDbContextCreator<IQuotesContext>, QuotesContextCreator>(x =>
+                    new QuotesContextCreator(configuration.GetConnectionString("Postgres"), 1000));
 
                 services.AddHostedService<BotService>();
                 services.AddHostedService<DiscordLoggingService>();
