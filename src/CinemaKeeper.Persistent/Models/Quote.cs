@@ -1,4 +1,6 @@
-﻿namespace CinemaKeeper.Persistence.Models
+﻿using System;
+
+namespace CinemaKeeper.Persistence.Models
 {
     public class Quote
     {

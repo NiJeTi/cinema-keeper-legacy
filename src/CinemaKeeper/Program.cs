@@ -12,6 +12,7 @@ using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -71,14 +72,20 @@ internal static class Program
 
                 services.AddSingleton(provider =>
                 {
-                    var interactionService = new InteractionService(provider.GetRequiredService<DiscordSocketClient>());
+                    var interactionService =
+                        new InteractionService(provider.GetRequiredService<DiscordSocketClient>());
+
                     interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), provider);
 
                     return interactionService;
                 });
 
-                services.AddSingleton<IDbContextCreator<IQuotesContext>, QuotesContextCreator>(x =>
-                    new QuotesContextCreator(configuration.GetConnectionString("Postgres"), 1000));
+                services.AddDbContext<AbobaContext>(options =>
+                {
+                    options.UseNpgsql(configuration.GetConnectionString("Postgres"));
+                });
+                // services.AddSingleton<IDbContextCreator<IQuotesContext>, QuotesContextCreator>(x =>
+                //     new QuotesContextCreator(configuration.GetConnectionString("Postgres"), 1000));
 
                 services.AddHostedService<BotService>();
                 services.AddHostedService<DiscordLoggingService>();

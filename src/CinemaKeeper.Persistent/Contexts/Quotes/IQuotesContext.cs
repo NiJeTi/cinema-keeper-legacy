@@ -1,4 +1,6 @@
-﻿using CinemaKeeper.Persistence.Models;
+﻿using System.Linq;
+
+using CinemaKeeper.Persistence.Models;
 
 namespace CinemaKeeper.Persistence.Contexts.Quotes;
 

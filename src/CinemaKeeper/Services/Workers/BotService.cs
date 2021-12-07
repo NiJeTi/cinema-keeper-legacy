@@ -10,6 +10,7 @@ using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -120,7 +121,8 @@ public class BotService : BackgroundService
     private async Task SlashCommandHandler(SocketSlashCommand command)
     {
         var commandContext = new SocketInteractionContext(_client, command);
-        await _interactionService.ExecuteCommandAsync(commandContext, _serviceProvider);
+        using var serviceScope = _serviceProvider.CreateScope();
+        await _interactionService.ExecuteCommandAsync(commandContext, serviceScope.ServiceProvider);
     }
 
     private async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)

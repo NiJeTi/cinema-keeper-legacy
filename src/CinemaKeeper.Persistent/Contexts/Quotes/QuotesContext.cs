@@ -1,4 +1,6 @@
-﻿using CinemaKeeper.Persistence.Models;
+﻿using System.Linq;
+
+using CinemaKeeper.Persistence.Models;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +11,7 @@ public class QuotesContext : DbContextBase, IQuotesContext
     public QuotesContext(string connectionString, int commandTimeout) : base(connectionString, commandTimeout) { }
     public QuotesContext(DbContextOptions options) : base(options) { }
 
-    private DbSet<Quote> DbSet { get; set; }
+    public DbSet<Quote> DbSet { get; set; }
 
     public IQueryable<Quote> Quotes => DbSet.AsQueryable();
 
