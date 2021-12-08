@@ -96,13 +96,7 @@ public class QuoteSlashCommand : InteractionModuleBase, ISlashCommandCreator
 
     private void CreateQuote(string message, ulong userId, ulong authorId, DateTime createDate)
     {
-        var quote = new Quote
-        {
-            Text = message,
-            UserId = userId,
-            AuthorId = authorId,
-            CreateDate = createDate
-        };
+        var quote = new Quote(userId, message, createDate, authorId);
 
         _postgresContext.Add(quote);
     }
