@@ -72,18 +72,7 @@ public class BotService : BackgroundService
 
         foreach (var creator in creators)
         {
-            var constructor = creator.GetConstructors().Single();
-
-            var constructorParameters =
-                constructor
-                   .GetParameters()
-                   .Select(info =>
-                        info.IsOptional
-                            ? scope.ServiceProvider.GetService(info.ParameterType)
-                            : scope.ServiceProvider.GetRequiredService(info.ParameterType))
-                   .ToArray();
-
-            var instance = (ISlashCommandCreator) Activator.CreateInstance(creator, constructorParameters)!;
+            var instance = ActivatorUtilities.CreateInstance<ISlashCommandCreator>(scope.ServiceProvider, creator);
 #if DEBUG
             var command = instance.GetTestSlashCommand();
 #else
