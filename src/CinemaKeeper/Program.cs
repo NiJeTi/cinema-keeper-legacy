@@ -54,6 +54,11 @@ internal static class Program
             {
                 var configuration = context.Configuration;
 
+                services.AddDbContext<AbobaContext>(options =>
+                {
+                    options.UseNpgsql(configuration.GetConnectionString("Postgres"));
+                });
+
                 services.Configure<DiscordSettings>(configuration.GetSection("Discord"));
 
                 services.AddAutoMapper(options => options.AddProfile<DtoMappingProfile>());
@@ -75,15 +80,12 @@ internal static class Program
                     var interactionService =
                         new InteractionService(provider.GetRequiredService<DiscordSocketClient>());
 
-                    interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), provider);
+                    interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(),
+                        provider.CreateScope().ServiceProvider);
 
                     return interactionService;
                 });
 
-                services.AddDbContext<AbobaContext>(options =>
-                {
-                    options.UseNpgsql(configuration.GetConnectionString("Postgres"));
-                });
                 // services.AddSingleton<IDbContextCreator<IQuotesContext>, QuotesContextCreator>(x =>
                 //     new QuotesContextCreator(configuration.GetConnectionString("Postgres"), 1000));
 

@@ -28,6 +28,7 @@ public class BotService : BackgroundService
     private readonly IOptions<DiscordSettings> _discordSettings;
 
     private readonly DiscordSocketClient _client;
+
     private readonly CommandService _commandService;
     private readonly InteractionService _interactionService;
     private readonly ILocalizationProvider _localizationProvider;
@@ -69,6 +70,15 @@ public class BotService : BackgroundService
            .Build();
 
         await _client.CreateGlobalApplicationCommandAsync(command);
+        var guildCommand2 = new SlashCommandBuilder();
+        var command2 = guildCommand2
+           .WithName("quote2")
+           .WithDescription("Manage the most stunning quotes of the specified user")
+           .AddOption("user", ApplicationCommandOptionType.User, "User who once told this", true)
+           .AddOption("message", ApplicationCommandOptionType.String, "Quote")
+           .Build();
+
+        await _client.GetGuild(400230889453518848).CreateApplicationCommandAsync(command2);
     }
 
     public override async Task StartAsync(CancellationToken cancellationToken)
@@ -121,8 +131,8 @@ public class BotService : BackgroundService
     private async Task SlashCommandHandler(SocketSlashCommand command)
     {
         var commandContext = new SocketInteractionContext(_client, command);
-        using var serviceScope = _serviceProvider.CreateScope();
-        await _interactionService.ExecuteCommandAsync(commandContext, serviceScope.ServiceProvider);
+        // using var serviceScope = _serviceProvider.CreateScope();
+        await _interactionService.ExecuteCommandAsync(commandContext, _serviceProvider);
     }
 
     private async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)

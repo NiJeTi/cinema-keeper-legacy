@@ -34,18 +34,64 @@ namespace CinemaKeeper.Commands
         public async Task HandleQuote(IUser user, string? message = null)
         {
             // using var context = _contextCreator.Create();
+            await Context.Interaction.DeferAsync();
+
+            if (message is not null)
+            {
+                // _abobaContext.Quotes.Add(new Quote
+                // {
+                //     Id = Guid.NewGuid(),
+                //     Text = message,
+                //     CreateDate = Context.Interaction.CreatedAt.UtcDateTime,
+                //     AuthorId = Context.User.Id,
+                //     UserId = user.Id
+                // });
+                //
+                // await _abobaContext.SaveChangesAsync();
+
+                await Context.Interaction.ModifyOriginalResponseAsync(properties =>
+                {
+                    properties.Content = "Quote created";
+                });
+            }
+            else
+            {
+                // var quotes = _abobaContext.Quotes.Where(x => x.UserId == user.Id)
+                //    .Select(x => $"[{x.CreateDate.ToShortDateString()}] {x.Text}");
+                //
+                // await Context.Channel.SendMessageAsync(string.Join("\n", quotes));
+
+                await Context.Interaction.ModifyOriginalResponseAsync(properties =>
+                {
+                    properties.Content = "Done";
+                });
+            }
+            // Console.WriteLine(context.Quotes.Count());
+        }
+
+        [SlashCommand("quote2", "Manage the most stunning quotes of the specified user")]
+        public async Task HandleQuote2(IUser user, string? message = null)
+        {
+            // using var context = _contextCreator.Create();
+            await Context.Interaction.DeferAsync();
+
             if (message is not null)
             {
                 _abobaContext.Quotes.Add(new Quote
                 {
                     Id = Guid.NewGuid(),
                     Text = message,
-                    CreateDate = Context.Interaction.CreatedAt.DateTime,
+                    CreateDate = Context.Interaction.CreatedAt.UtcDateTime,
                     AuthorId = Context.User.Id,
                     UserId = user.Id
                 });
 
                 await _abobaContext.SaveChangesAsync();
+
+                await Context.Interaction.ModifyOriginalResponseAsync(properties =>
+                {
+                    properties.Content = "Quote created";
+                });
             }
             else
             {
@@ -53,6 +99,11 @@ namespace CinemaKeeper.Commands
                    .Select(x => $"[{x.CreateDate.ToShortDateString()}] {x.Text}");
 
                 await Context.Channel.SendMessageAsync(string.Join("\n", quotes));
+
+                await Context.Interaction.ModifyOriginalResponseAsync(properties =>
+                {
+                    properties.Content = "Done";
+                });
             }
             // Console.WriteLine(context.Quotes.Count());
         }
