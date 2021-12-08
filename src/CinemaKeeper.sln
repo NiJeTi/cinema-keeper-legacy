@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaKeeper", "CinemaKeeper\CinemaKeeper.csproj", "{80954162-FE79-4161-9436-8DB7A561A902}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaKeeper.Persistent", "CinemaKeeper.Persistent\CinemaKeeper.Persistent.csproj", "{C24E043A-0CCA-4E4A-8829-EA26965F870F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaKeeper.Persistence", "CinemaKeeper.Persistence\CinemaKeeper.Persistence.csproj", "{C24E043A-0CCA-4E4A-8829-EA26965F870F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
