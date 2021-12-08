@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CinemaKeeper.Persistence.Migrations
 {
-    [DbContext(typeof(AbobaContext))]
+    [DbContext(typeof(PostgresContext))]
     [Migration("20211207204526_initial")]
     partial class initial
     {

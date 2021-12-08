@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using CinemaKeeper.Exceptions;
 using CinemaKeeper.Settings;
+using CinemaKeeper.SlashCommands;
 
 using Discord;
 using Discord.Commands;
@@ -34,6 +36,7 @@ public class BotService : BackgroundService
     private readonly ILocalizationProvider _localizationProvider;
 
     private readonly IServiceProvider _serviceProvider;
+    private readonly IOptions<DiscordSettings> _options;
 
     public BotService(
         ILogger logger,
@@ -42,7 +45,8 @@ public class BotService : BackgroundService
         CommandService commandService,
         InteractionService interactionService,
         ILocalizationProvider localizationProvider,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        IOptions<DiscordSettings> options)
     {
         _logger = logger.ForContext<BotService>();
         _discordSettings = discordSettings;
@@ -51,6 +55,7 @@ public class BotService : BackgroundService
         _interactionService = interactionService;
         _localizationProvider = localizationProvider;
         _serviceProvider = serviceProvider;
+        _options = options;
 
         _client.MessageReceived += MessageReceived;
         _client.SlashCommandExecuted += SlashCommandHandler;
@@ -60,25 +65,46 @@ public class BotService : BackgroundService
 
     private async Task ClientReady()
     {
-        var guildCommand = new SlashCommandBuilder();
+        var creators = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+           .Where(x => typeof(ISlashCommandCreator).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
 
-        var command = guildCommand
-           .WithName("quote")
-           .WithDescription("Manage the most stunning quotes of the specified user")
-           .AddOption("user", ApplicationCommandOptionType.User, "User who once told this", true)
-           .AddOption("message", ApplicationCommandOptionType.String, "Quote")
-           .Build();
+        using var scope = _serviceProvider.CreateScope();
 
+        foreach (var creator in creators)
+        {
+            var constructor = creator.GetConstructors().Single();
+
+            var constructorParameters =
+                constructor
+                   .GetParameters()
+                   .Select(info =>
+                        info.IsOptional
+                            ? scope.ServiceProvider.GetService(info.ParameterType)
+                            : scope.ServiceProvider.GetRequiredService(info.ParameterType))
+                   .ToArray();
+
+            var instance = (ISlashCommandCreator) Activator.CreateInstance(creator, constructorParameters)!;
+#if DEBUG
+            var command = instance.GetTestSlashCommand();
+#else
+            var command = instance.GetSlashCommand()();
+#endif
+            await CreateCommand(command);
+        }
+    }
+
+    private async Task CreateCommand(SlashCommandProperties command)
+    {
+#if DEBUG
+        if (_options.Value.TestServerId is null)
+        {
+            throw new InvalidOperationException("Test server id is not provided");
+        }
+
+        await _client.GetGuild(_options.Value.TestServerId.Value).CreateApplicationCommandAsync(command);
+#else
         await _client.CreateGlobalApplicationCommandAsync(command);
-        var guildCommand2 = new SlashCommandBuilder();
-        var command2 = guildCommand2
-           .WithName("quote2")
-           .WithDescription("Manage the most stunning quotes of the specified user")
-           .AddOption("user", ApplicationCommandOptionType.User, "User who once told this", true)
-           .AddOption("message", ApplicationCommandOptionType.String, "Quote")
-           .Build();
-
-        await _client.GetGuild(400230889453518848).CreateApplicationCommandAsync(command2);
+#endif
     }
 
     public override async Task StartAsync(CancellationToken cancellationToken)
@@ -131,7 +157,6 @@ public class BotService : BackgroundService
     private async Task SlashCommandHandler(SocketSlashCommand command)
     {
         var commandContext = new SocketInteractionContext(_client, command);
-        // using var serviceScope = _serviceProvider.CreateScope();
         await _interactionService.ExecuteCommandAsync(commandContext, _serviceProvider);
     }
 

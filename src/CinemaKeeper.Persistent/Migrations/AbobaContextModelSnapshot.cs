@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CinemaKeeper.Persistence.Migrations
 {
-    [DbContext(typeof(AbobaContext))]
+    [DbContext(typeof(PostgresContext))]
     partial class AbobaContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

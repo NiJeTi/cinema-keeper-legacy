@@ -3,7 +3,6 @@ using System.Reflection;
 
 using CinemaKeeper.Extensions;
 using CinemaKeeper.Persistence;
-using CinemaKeeper.Persistence.Contexts.Quotes;
 using CinemaKeeper.Services;
 using CinemaKeeper.Services.Workers;
 using CinemaKeeper.Settings;
@@ -54,7 +53,7 @@ internal static class Program
             {
                 var configuration = context.Configuration;
 
-                services.AddDbContext<AbobaContext>(options =>
+                services.AddDbContext<PostgresContext>(options =>
                 {
                     options.UseNpgsql(configuration.GetConnectionString("Postgres"));
                 });
@@ -85,9 +84,6 @@ internal static class Program
 
                     return interactionService;
                 });
-
-                // services.AddSingleton<IDbContextCreator<IQuotesContext>, QuotesContextCreator>(x =>
-                //     new QuotesContextCreator(configuration.GetConnectionString("Postgres"), 1000));
 
                 services.AddHostedService<BotService>();
                 services.AddHostedService<DiscordLoggingService>();
