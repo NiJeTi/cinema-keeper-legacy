@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 
 using CinemaKeeper.Extensions;
-using CinemaKeeper.Persistence;
 using CinemaKeeper.Services;
 using CinemaKeeper.Services.Workers;
 using CinemaKeeper.Settings;
