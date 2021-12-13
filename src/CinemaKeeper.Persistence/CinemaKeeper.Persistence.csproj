@@ -3,7 +3,8 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
-        <RootNamespace>CinemaKeeper.Persistence</RootNamespace>
+        <RootNamespace>CinemaKeeper.Storage</RootNamespace>
+        <AssemblyName>CinemaKeeper.Storage</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>

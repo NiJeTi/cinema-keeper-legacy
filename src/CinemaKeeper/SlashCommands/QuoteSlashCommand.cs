@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using CinemaKeeper.Persistence;
-using CinemaKeeper.Persistence.Models;
+using CinemaKeeper.Storage;
+using CinemaKeeper.Storage.Models;
 
 using Discord;
 using Discord.Commands;
@@ -29,7 +30,7 @@ public class QuoteSlashCommand : InteractionModuleBase, ISlashCommandCreator
     }
 
 #if DEBUG
-    [SlashCommand("quote-wip", "Manage the most stunning quotes of the specified user")]
+    [SlashCommand("quote-test", "Manage the most stunning quotes of the specified user")]
 #else
     [SlashCommand("quote", "Manage the most stunning quotes of the specified user")]
 #endif
@@ -118,6 +119,6 @@ public class QuoteSlashCommand : InteractionModuleBase, ISlashCommandCreator
 
     public SlashCommandProperties GetTestSlashCommand() =>
         SlashCommandBuilder
-           .WithName("quote-wip")
+           .WithName("quote-test")
            .Build();
 }

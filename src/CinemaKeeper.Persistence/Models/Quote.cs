@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CinemaKeeper.Persistence.Models
+namespace CinemaKeeper.Storage.Models
 {
     public class Quote
     {

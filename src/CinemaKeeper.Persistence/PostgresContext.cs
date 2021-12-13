@@ -1,10 +1,8 @@
-﻿using System;
-
-using CinemaKeeper.Persistence.Models;
+﻿using CinemaKeeper.Storage.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace CinemaKeeper.Persistence;
+namespace CinemaKeeper.Storage;
 
 public sealed class PostgresContext : DbContext
 {

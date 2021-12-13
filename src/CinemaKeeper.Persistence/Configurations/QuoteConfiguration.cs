@@ -1,9 +1,9 @@
-﻿using CinemaKeeper.Persistence.Models;
+﻿using CinemaKeeper.Storage.Models;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CinemaKeeper.Persistence.Configurations;
+namespace CinemaKeeper.Storage.Configurations;
 
 public class QuoteConfiguration : IEntityTypeConfiguration<Quote>
 {

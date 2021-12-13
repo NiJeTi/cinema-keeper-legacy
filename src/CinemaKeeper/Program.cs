@@ -6,6 +6,7 @@ using CinemaKeeper.Persistence;
 using CinemaKeeper.Services;
 using CinemaKeeper.Services.Workers;
 using CinemaKeeper.Settings;
+using CinemaKeeper.Storage;
 
 using Discord.Commands;
 using Discord.Interactions;
