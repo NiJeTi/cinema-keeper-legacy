@@ -24,7 +24,7 @@ namespace CinemaKeeper.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CinemaKeeper.Persistence.Models.Quote", b =>
+            modelBuilder.Entity("CinemaKeeper.Storage.Models.Quote", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

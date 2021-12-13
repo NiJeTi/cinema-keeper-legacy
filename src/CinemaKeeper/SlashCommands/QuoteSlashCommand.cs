@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using CinemaKeeper.Persistence;
 using CinemaKeeper.Storage;
 using CinemaKeeper.Storage.Models;
 

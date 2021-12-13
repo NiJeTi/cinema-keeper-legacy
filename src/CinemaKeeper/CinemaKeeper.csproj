@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CinemaKeeper.Persistence\CinemaKeeper.Persistence.csproj" />
+    <ProjectReference Include="..\CinemaKeeper.Storage\CinemaKeeper.Storage.csproj" />
   </ItemGroup>
 
   <Choose>
