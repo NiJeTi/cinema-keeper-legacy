@@ -1,13 +1,14 @@
 using System;
 using System.Reflection;
 
-using CinemaKeeper.Database.Context;
 using CinemaKeeper.Extensions;
 using CinemaKeeper.Services;
 using CinemaKeeper.Services.Workers;
 using CinemaKeeper.Settings;
+using CinemaKeeper.Storage;
 
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,7 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
-        Log.Logger = new LoggerConfiguration().CreateBootstrapLogger();
+        Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
         try
         {
@@ -52,14 +53,16 @@ internal static class Program
             {
                 var configuration = context.Configuration;
 
+                services.AddDbContext<PostgresContext>(options =>
+                {
+                    options.UseNpgsql(configuration.GetConnectionString("Postgres"));
+                });
+
                 services.Configure<DiscordSettings>(configuration.GetSection("Discord"));
 
                 services.AddAutoMapper(options => options.AddProfile<DtoMappingProfile>());
 
                 services.AddSingleton<ILocalizationProvider, LocalizationProvider>();
-
-                services.AddDbContext<Postgres>(options =>
-                    options.UseNpgsql(configuration.GetConnectionString("Postgres")));
 
                 services.AddSingleton<DiscordSocketClient>();
 
@@ -69,6 +72,17 @@ internal static class Program
                     commandService.AddModulesAsync(Assembly.GetExecutingAssembly(), provider);
 
                     return commandService;
+                });
+
+                services.AddSingleton(provider =>
+                {
+                    var interactionService =
+                        new InteractionService(provider.GetRequiredService<DiscordSocketClient>());
+
+                    interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(),
+                        provider.CreateScope().ServiceProvider);
+
+                    return interactionService;
                 });
 
                 services.AddHostedService<BotService>();

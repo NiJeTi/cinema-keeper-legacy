@@ -1,18 +1,25 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using CinemaKeeper.Exceptions;
 using CinemaKeeper.Settings;
+using CinemaKeeper.SlashCommands;
 
 using Discord;
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 using Serilog;
+
+using ExecuteResult = Discord.Commands.ExecuteResult;
+using IResult = Discord.Commands.IResult;
 
 namespace CinemaKeeper.Services.Workers;
 
@@ -23,28 +30,70 @@ public class BotService : BackgroundService
     private readonly IOptions<DiscordSettings> _discordSettings;
 
     private readonly DiscordSocketClient _client;
+
     private readonly CommandService _commandService;
+    private readonly InteractionService _interactionService;
     private readonly ILocalizationProvider _localizationProvider;
 
     private readonly IServiceProvider _serviceProvider;
+    private readonly IOptions<DiscordSettings> _options;
 
     public BotService(
         ILogger logger,
         IOptions<DiscordSettings> discordSettings,
         DiscordSocketClient client,
         CommandService commandService,
+        InteractionService interactionService,
         ILocalizationProvider localizationProvider,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        IOptions<DiscordSettings> options)
     {
         _logger = logger.ForContext<BotService>();
         _discordSettings = discordSettings;
         _client = client;
         _commandService = commandService;
+        _interactionService = interactionService;
         _localizationProvider = localizationProvider;
         _serviceProvider = serviceProvider;
+        _options = options;
 
         _client.MessageReceived += MessageReceived;
+        _client.SlashCommandExecuted += SlashCommandHandler;
+        _client.Ready += ClientReady;
         _commandService.CommandExecuted += OnCommandExecuted;
+    }
+
+    private async Task ClientReady()
+    {
+        var creators = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+           .Where(x => typeof(ISlashCommandCreator).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+
+        using var scope = _serviceProvider.CreateScope();
+
+        foreach (var creator in creators)
+        {
+            var instance = ActivatorUtilities.CreateInstance<ISlashCommandCreator>(scope.ServiceProvider, creator);
+#if DEBUG
+            var command = instance.GetTestSlashCommand();
+#else
+            var command = instance.GetSlashCommand()();
+#endif
+            await CreateCommand(command);
+        }
+    }
+
+    private async Task CreateCommand(SlashCommandProperties command)
+    {
+#if DEBUG
+        if (_options.Value.TestServerId is null)
+        {
+            throw new InvalidOperationException("Test server id is not provided");
+        }
+
+        await _client.GetGuild(_options.Value.TestServerId.Value).CreateApplicationCommandAsync(command);
+#else
+        await _client.CreateGlobalApplicationCommandAsync(command);
+#endif
     }
 
     public override async Task StartAsync(CancellationToken cancellationToken)
@@ -92,6 +141,12 @@ public class BotService : BackgroundService
 
         var commandContext = new SocketCommandContext(_client, command);
         await _commandService.ExecuteAsync(commandContext, argPos, _serviceProvider);
+    }
+
+    private async Task SlashCommandHandler(SocketSlashCommand command)
+    {
+        var commandContext = new SocketInteractionContext(_client, command);
+        await _interactionService.ExecuteCommandAsync(commandContext, _serviceProvider);
     }
 
     private async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)
