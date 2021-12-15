@@ -6,6 +6,7 @@
 It can:
 - Lock voice channels
 - Mention voice channels
+- Store the most stunning quotes of ur homies 
 
 ---
 
@@ -35,3 +36,20 @@ It can:
 5. Click *Copy ID*
 6. Type `!cast <id>`
 7. Such a very good boi-bot will mention every user in the channel
+
+---
+
+### Quotes storage
+
+### Add
+1. Use `/quote` slash command
+2. Select user
+3. Enter something that they said
+4. Send
+5. Quote has been saved
+
+### Get
+1. Use `/quote` slash command
+2. Select user
+3. Send
+4. All quotes of the user has been displayed
