@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Database\Internal" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CinemaKeeper.Storage\CinemaKeeper.Storage.csproj" />
   </ItemGroup>
 
