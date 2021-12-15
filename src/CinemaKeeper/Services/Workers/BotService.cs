@@ -76,7 +76,7 @@ public class BotService : BackgroundService
 #if DEBUG
             var command = instance.GetTestSlashCommand();
 #else
-            var command = instance.GetSlashCommand()();
+            var command = instance.GetSlashCommand();
 #endif
             await CreateCommand(command);
         }
@@ -86,9 +86,7 @@ public class BotService : BackgroundService
     {
 #if DEBUG
         if (_options.Value.TestServerId is null)
-        {
-            throw new InvalidOperationException("Test server id is not provided");
-        }
+            throw new InvalidOperationException("Test server ID is not provided");
 
         await _client.GetGuild(_options.Value.TestServerId.Value).CreateApplicationCommandAsync(command);
 #else

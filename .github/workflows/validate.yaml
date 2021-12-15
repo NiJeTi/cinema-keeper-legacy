@@ -25,4 +25,4 @@ jobs:
           dotnet-version: 6.0.x
 
       - name: Build
-        run: dotnet build ${{ env.PROJECT_DIR }}
+        run: dotnet build --configuration Release ${{ env.PROJECT_DIR }}
