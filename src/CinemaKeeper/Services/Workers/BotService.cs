@@ -104,8 +104,6 @@ public class BotService : BackgroundService
         {
             await command.DeleteAsync();
         }
-
-        _logger.Information("Exit aboba");
     }
 
     private async Task CreateCommand(SlashCommandProperties command)
