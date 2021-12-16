@@ -30,6 +30,7 @@ public class BotService : BackgroundService
     private readonly IOptions<DiscordSettings> _discordSettings;
 
     private readonly DiscordSocketClient _client;
+    private readonly ulong _guildId;
 
     private readonly CommandService _commandService;
     private readonly InteractionService _interactionService;
@@ -57,9 +58,19 @@ public class BotService : BackgroundService
         _serviceProvider = serviceProvider;
         _options = options;
 
+#if DEBUG
+        if (_options.Value.TestServerId is null)
+            throw new InvalidOperationException("Test server ID is not provided");
+
+        _guildId = _options.Value.TestServerId.Value;
+#else
+        _guildId = 0;
+#endif
+
         _client.MessageReceived += MessageReceived;
         _client.SlashCommandExecuted += SlashCommandHandler;
         _client.Ready += ClientReady;
+
         _commandService.CommandExecuted += OnCommandExecuted;
     }
 
@@ -72,7 +83,7 @@ public class BotService : BackgroundService
 
         foreach (var creator in creators)
         {
-            var instance = ActivatorUtilities.CreateInstance<ISlashCommandCreator>(scope.ServiceProvider, creator);
+            var instance = (ISlashCommandCreator) ActivatorUtilities.CreateInstance(scope.ServiceProvider, creator);
 #if DEBUG
             var command = instance.GetTestSlashCommand();
 #else
@@ -82,13 +93,23 @@ public class BotService : BackgroundService
         }
     }
 
+    private async Task CleanUpCommands()
+    {
+#if DEBUG
+        var commands = await _client.GetGuild(_guildId).GetApplicationCommandsAsync();
+#else
+        var commands = await _client.GetGlobalApplicationCommandsAsync();
+#endif
+        foreach (var command in commands)
+        {
+            await command.DeleteAsync();
+        }
+    }
+
     private async Task CreateCommand(SlashCommandProperties command)
     {
 #if DEBUG
-        if (_options.Value.TestServerId is null)
-            throw new InvalidOperationException("Test server ID is not provided");
-
-        await _client.GetGuild(_options.Value.TestServerId.Value).CreateApplicationCommandAsync(command);
+        await _client.GetGuild(_guildId).CreateApplicationCommandAsync(command);
 #else
         await _client.CreateGlobalApplicationCommandAsync(command);
 #endif
