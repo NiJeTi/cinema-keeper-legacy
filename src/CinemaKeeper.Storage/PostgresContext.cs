@@ -8,6 +8,8 @@ public sealed class PostgresContext : DbContext
 {
     public PostgresContext(DbContextOptions<PostgresContext> options) : base(options)
     {
+        Database.Migrate();
+    
         Quotes = Set<Quote>();
     }
 
