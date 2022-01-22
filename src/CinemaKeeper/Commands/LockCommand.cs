@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 
 using CinemaKeeper.Commands.Preconditions;
-using CinemaKeeper.Exceptions;
+using CinemaKeeper.Commands.Preconditions.Parameters;
+using CinemaKeeper.Services;
 
 using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 
 using Serilog;
@@ -12,50 +13,52 @@ using Serilog;
 namespace CinemaKeeper.Commands;
 
 [RequireContext(ContextType.Guild)]
-[RequireBotPermission(GuildPermission.ManageChannels)]
+[RequireBotPermission(ChannelPermission.ManageChannels)]
 [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
-[UserMustBeInVoiceChannel]
-public class LockCommand : ModuleBase<SocketCommandContext>
+public class LockCommand : InteractionModuleBase, ISlashCommandBuilder
 {
+    private const string Command = "lock";
+
+    public const int MinUserLimit = 1;
+    public const int MaxUserLimit = 99;
+
+    private readonly ILocalizationProvider _localization;
+
     private readonly ILogger _logger;
 
-    public LockCommand(ILogger logger)
+    public LockCommand(
+        ILogger logger,
+        ILocalizationProvider localization)
     {
         _logger = logger.ForContext<LockCommand>();
+        _localization = localization;
     }
 
-    [Command("lock")]
-    public async Task Lock()
+    public SlashCommandProperties Build()
     {
+        var command = _localization.Get("commands.lock.definition.command");
+        var limitOption = _localization.Get("commands.lock.definition.limitOption");
+
+        return new SlashCommandBuilder()
+           .WithName(Command)
+           .WithDescription(command)
+           .AddOption("limit", ApplicationCommandOptionType.Integer, limitOption,
+                minValue: MinUserLimit, maxValue: MaxUserLimit)
+           .Build();
+    }
+
+    [RequireVoiceChannel]
+    [SlashCommand(Command, "")]
+    public async Task Execute([UserLimitParameter] int limit = default)
+    {
+        // BUG: Voice channel is not null after leave for several seconds
         var voiceChannel = ((SocketGuildUser) Context.User).VoiceChannel;
+        limit = limit != default ? limit : voiceChannel.Users.Count;
+        await voiceChannel.ModifyAsync(p => p.UserLimit = limit);
 
-        await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = voiceChannel.Users.Count);
+        var locked = _localization.Get("commands.lock.locked", voiceChannel.Mention, limit);
+        await RespondAsync(locked, ephemeral: true);
 
-        _logger.Debug("Locked channel {VoiceChannel} for {UserLimit} user(s)", voiceChannel.Name,
-            voiceChannel.UserLimit);
-    }
-
-    [Command("lock")]
-    public async Task Lock(int userLimit)
-    {
-        var voiceChannel = ((SocketGuildUser) Context.User).VoiceChannel;
-
-        // TODO: Find a way to use PreconditionAttribute
-        if (!IsUsersLimitValid(userLimit, voiceChannel.Users.Count))
-            throw new InvalidUserLimitException();
-
-        await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = userLimit);
-
-        _logger.Debug("Locked channel {VoiceChannel} for {UserLimit} user(s)", voiceChannel.Name,
-            voiceChannel.UserLimit);
-    }
-
-    private static bool IsUsersLimitValid(int value, int currentUsersCount)
-    {
-        const int minUsersLimit = 1;
-        const int maxUsersLimit = 99;
-
-        return value >= currentUsersCount
-            && value is >= minUsersLimit and <= maxUsersLimit;
+        _logger.Debug("Locked channel \"{VoiceChannel}\" for {UserLimit} user(s)", voiceChannel.Name, limit);
     }
 }

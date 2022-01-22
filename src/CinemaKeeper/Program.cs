@@ -1,23 +1,22 @@
 using System;
 using System.Reflection;
 
-using CinemaKeeper.Extensions;
 using CinemaKeeper.Services;
 using CinemaKeeper.Services.Workers;
 using CinemaKeeper.Settings;
-using CinemaKeeper.Storage;
+using CinemaKeeper.Storage.Extensions;
 
-using Discord.Commands;
+using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Serilog;
+
+using ILogger = Serilog.ILogger;
 
 namespace CinemaKeeper;
 
@@ -25,15 +24,22 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
-        Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
+        var logger = new LoggerConfiguration()
+           .WriteTo.Console()
+           .CreateBootstrapLogger() as ILogger;
 
         try
         {
-            CreateHost(args).Run();
+            var host = CreateHost(args);
+
+            var serviceProvider = host.Services;
+            logger = serviceProvider.GetRequiredService<ILogger>();
+
+            host.Run();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Log.Fatal(e, "Application terminated unexpectedly");
+            logger.Fatal(ex, "Application terminated unexpectedly");
         }
         finally
         {
@@ -53,40 +59,41 @@ internal static class Program
             {
                 var configuration = context.Configuration;
 
-                services.AddDbContext<PostgresContext>(options =>
-                {
-                    options.UseNpgsql(configuration.GetConnectionString("Postgres"));
-                });
-
                 services.Configure<DiscordSettings>(configuration.GetSection("Discord"));
-
-                services.AddAutoMapper(options => options.AddProfile<DtoMappingProfile>());
+                services.Configure<LocalizationSettings>(configuration.GetSection("Localization"));
 
                 services.AddSingleton<ILocalizationProvider, LocalizationProvider>();
 
-                services.AddSingleton<DiscordSocketClient>();
+                services.AddDiscordClient();
+                services.ConfigurePersistentStorage(configuration);
 
-                services.AddSingleton(provider =>
-                {
-                    var commandService = new CommandService();
-                    commandService.AddModulesAsync(Assembly.GetExecutingAssembly(), provider);
-
-                    return commandService;
-                });
-
-                services.AddSingleton(provider =>
-                {
-                    var interactionService =
-                        new InteractionService(provider.GetRequiredService<DiscordSocketClient>());
-
-                    interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(),
-                        provider.CreateScope().ServiceProvider);
-
-                    return interactionService;
-                });
-
-                services.AddHostedService<BotService>();
-                services.AddHostedService<DiscordLoggingService>();
+                services.AddHostedService<DiscordRouter>();
             })
            .Build();
+
+    private static void AddDiscordClient(this IServiceCollection services)
+    {
+        services.AddSingleton<IDiscordLogger, DiscordLogger>();
+
+        services.AddSingleton(_ =>
+        {
+            var config = new DiscordSocketConfig { GatewayIntents = GatewayIntents.Guilds };
+
+            return new DiscordSocketClient(config);
+        });
+
+        services.AddSingleton(provider =>
+        {
+            var discordClient = provider.GetRequiredService<DiscordSocketClient>();
+            var interactionService = new InteractionService(discordClient);
+
+            using var scope = provider.CreateScope();
+
+            interactionService
+               .AddModulesAsync(Assembly.GetExecutingAssembly(), scope.ServiceProvider)
+               .Wait();
+
+            return interactionService;
+        });
+    }
 }

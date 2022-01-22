@@ -1,11 +1,33 @@
 ﻿{
   "errors": {
+    "unknown": "Unknown error. Contact bot administrator!",
     "userMustBeInVoiceChannel": "You must be in a voice channel",
-    "unknown": "Unknown error",
-    "parsingFailed": "Cannot parse one or more arguments",
-    "invalidNumberOfArguments": "Invalid number of arguments",
-    "voiceChannelNotFound": "Voice channel was not found",
-    "invalidUserLimit": "Invalid user limit",
-    "invalidChannelIdentifier": "Invalid voice channel identifier"
+    "invalidUserLimit": "Invalid user limit"
+  },
+  "commands": {
+    "lock": {
+      "definition": {
+        "command": "Set user limit for current voice channel",
+        "limitOption": "Custom user limit number"
+      },
+      "locked": "Locked channel {0} for **{1}** user(s)"
+    },
+    "unlock": {
+      "definition": {
+        "command": "Remove user limit for current voice channel"
+      },
+      "unlocked": "Unlocked channel {0}"
+    },
+    "quote": {
+      "definition": {
+        "command": "Manage the most stunning quotes of the specified author",
+        "authorOption": "User who once told this",
+        "messageOption": "Quote"
+      },
+      "title": "Quotes",
+      "description": "The most stunning quotes of {0}",
+      "noQuotesForUser": "There are no stored quotes of {0}",
+      "quoteAdded": "Quote for {0} added"
+    }
   }
 }

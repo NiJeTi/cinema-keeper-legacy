@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
 
 using CinemaKeeper.Commands.Preconditions;
+using CinemaKeeper.Services;
 
 using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 
 using Serilog;
@@ -11,17 +12,47 @@ using Serilog;
 namespace CinemaKeeper.Commands;
 
 [RequireContext(ContextType.Guild)]
-[RequireBotPermission(GuildPermission.ManageChannels)]
+[RequireBotPermission(ChannelPermission.ManageChannels)]
 [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
-[UserMustBeInVoiceChannel]
-public class UnlockCommand : ModuleBase<SocketCommandContext>
+[RequireVoiceChannel]
+public class UnlockCommand : InteractionModuleBase, ISlashCommandBuilder
 {
-    [Command("unlock")]
-    public async Task Unlock()
+    private const string Command = "unlock";
+
+    private readonly ILogger _logger;
+    private readonly ILocalizationProvider _localization;
+
+    public UnlockCommand(
+        ILogger logger,
+        ILocalizationProvider localization)
+    {
+        _logger = logger;
+        _localization = localization;
+    }
+
+    public SlashCommandProperties Build()
+    {
+        var command = _localization.Get("commands.unlock.definition.command");
+
+        return new SlashCommandBuilder()
+           .WithName(Command)
+           .WithDescription(command)
+           .Build();
+    }
+
+    [RequireContext(ContextType.Guild)]
+    [RequireBotPermission(ChannelPermission.ManageChannels)]
+    [RequireUserPermission(GuildPermission.Connect | GuildPermission.Speak)]
+    [RequireVoiceChannel]
+    [SlashCommand(Command, "")]
+    public async Task Execute()
     {
         var voiceChannel = ((SocketGuildUser) Context.User).VoiceChannel;
         await voiceChannel.ModifyAsync(vcp => vcp.UserLimit = null);
 
-        Log.Debug("Unlocked channel {VoiceChannel}", voiceChannel.Name);
+        var response = _localization.Get("commands.unlock.unlocked", voiceChannel.Mention);
+        await RespondAsync(response, ephemeral: true);
+
+        _logger.Debug("Unlocked channel {VoiceChannel}", voiceChannel.Name);
     }
 }

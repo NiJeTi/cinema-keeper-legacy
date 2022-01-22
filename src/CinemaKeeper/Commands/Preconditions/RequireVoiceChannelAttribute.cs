@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-using Discord.Commands;
+using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
 
 namespace CinemaKeeper.Commands.Preconditions;
 
-public class UserMustBeInVoiceChannelAttribute : PreconditionAttribute
+public class RequireVoiceChannelAttribute : PreconditionAttribute
 {
-    public override Task<PreconditionResult> CheckPermissionsAsync(
-        ICommandContext context,
-        CommandInfo command,
+    public override Task<PreconditionResult> CheckRequirementsAsync(
+        IInteractionContext context,
+        ICommandInfo commandInfo,
         IServiceProvider services) =>
         Task.FromResult(((SocketGuildUser) context.User).VoiceChannel is not null
             ? PreconditionResult.FromSuccess()
