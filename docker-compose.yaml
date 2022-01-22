@@ -5,10 +5,10 @@ services:
     image: ghcr.io/nijeti/cinema-keeper:${APP_VERSION}
     environment:
       DOTNET_ENVIRONMENT: ${DOTNET_ENVIRONMENT}
+      Discord__BotToken: ${BOT_TOKEN}
+      ConnectionStrings__Postgres: ${CS_POSTGRES}
     networks:
-      cinema-keeper_network:
-    volumes:
-      - ${CONFIG_FILE}:/app/appsettings.Production.json
+      cinema-keeper_network: null
     depends_on:
       - postgres
 
@@ -19,12 +19,12 @@ services:
       POSTGRES_USER: ${POSTGRES_DB_USER}
       POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
     networks:
-      cinema-keeper_network:
+      cinema-keeper_network: null
     volumes:
       - postgres:/var/lib/postgresql/data
 
 networks:
-  cinema-keeper_network:
+  cinema-keeper_network: null
 
 volumes:
-  postgres:
+  postgres: null
