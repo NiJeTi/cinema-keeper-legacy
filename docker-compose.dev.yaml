@@ -4,6 +4,8 @@ services:
   cinema-keeper:
     profiles:
       - donotstart
+    volumes:
+      - ./src/CinemaKeeper/localization.json:/app/localization.json
 
   postgres:
     ports:

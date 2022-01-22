@@ -6,8 +6,5 @@ namespace CinemaKeeper.Settings;
 public record DiscordSettings
 {
     public string BotToken { get; set; } = string.Empty;
-
-    public string CommandPrefix { get; set; } = "!";
-
-    public ulong? TestServerId { get; set; }
+    public ulong TestGuild { get; set; }
 }

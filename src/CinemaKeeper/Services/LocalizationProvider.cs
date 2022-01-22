@@ -12,19 +12,25 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
+using Serilog;
+
 namespace CinemaKeeper.Services;
 
 public class LocalizationProvider : ILocalizationProvider
 {
-    private static readonly Regex KeyPattern = new(@"^[a-zA-Z]\w*(\.[a-zA-Z]\w*)*$", RegexOptions.Compiled);
+    private static readonly Regex KeyPattern = new(@"^\w+(\.\w+)*$", RegexOptions.Compiled);
 
+    private readonly ILogger _logger;
     private readonly IOptionsMonitor<LocalizationSettings> _settings;
 
     private DateTime _fileModifiedDateTime;
     private JObject? _localizations;
 
-    public LocalizationProvider(IOptionsMonitor<LocalizationSettings> settings)
+    public LocalizationProvider(
+        ILogger logger,
+        IOptionsMonitor<LocalizationSettings> settings)
     {
+        _logger = logger.ForContext<LocalizationProvider>();
         _settings = settings;
     }
 
@@ -51,8 +57,7 @@ public class LocalizationProvider : ILocalizationProvider
         }
     }
 
-    public string Get(string key) =>
-        InternalGet(key);
+    public string Get(string key) => InternalGet(key);
 
     public string Get(string key, params object?[] args) =>
         string.Format(CultureInfo.CurrentCulture, InternalGet(key), args);
@@ -65,7 +70,11 @@ public class LocalizationProvider : ILocalizationProvider
         var indexValues = key.Split('.').Reverse();
         var indexStack = new Stack<string>(indexValues);
 
-        return RecursiveRead(Localizations, indexStack).ToString();
+        var result = RecursiveRead(Localizations, indexStack).ToString();
+
+        _logger.Verbose("Found localized string \"{String}\" for key \"{Key}\"", result, key);
+
+        return result;
     }
 
     private static JToken RecursiveRead(JObject currentObject, Stack<string> indexStack)
@@ -80,7 +89,7 @@ public class LocalizationProvider : ILocalizationProvider
             return jToken;
 
         var jObject = jToken as JObject
-            ?? throw new LocalizationException($"Localization for key '{index}' is not a JObject");
+            ?? throw new LocalizationException($"Localization for key '{index}' is not a {nameof(JObject)}");
 
         return RecursiveRead(jObject, indexStack);
     }
