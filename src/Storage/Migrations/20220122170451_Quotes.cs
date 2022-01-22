@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace CinemaKeeper.Database.Migrations
+namespace CinemaKeeper.Storage.Migrations
 {
     public partial class Quotes : Migration
     {

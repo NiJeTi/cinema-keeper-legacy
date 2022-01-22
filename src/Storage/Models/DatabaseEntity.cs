@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CinemaKeeper.Database.Models;
+namespace CinemaKeeper.Storage.Models;
 
 public abstract class DatabaseEntity
 {

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-using CinemaKeeper.Database.Models;
+using CinemaKeeper.Storage.Models;
 
-namespace CinemaKeeper.Database;
+namespace CinemaKeeper.Storage;
 
 public interface IAsyncDatabaseWriter
 {

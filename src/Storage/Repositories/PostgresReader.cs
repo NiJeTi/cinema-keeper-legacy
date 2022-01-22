@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-using CinemaKeeper.Database.Context;
-using CinemaKeeper.Database.Models;
+using CinemaKeeper.Storage.Context;
+using CinemaKeeper.Storage.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace CinemaKeeper.Database.Repositories;
+namespace CinemaKeeper.Storage.Repositories;
 
 public class PostgresReader : IDatabaseReader, IAsyncDatabaseReader
 {
@@ -29,6 +29,7 @@ public class PostgresReader : IDatabaseReader, IAsyncDatabaseReader
     {
         var quotes = await _postgres.Quotes
            .Where(q => q.Author == userId)
+           .OrderBy(q => q.CreatedAt)
            .ToListAsync();
 
         return quotes.AsReadOnly();
