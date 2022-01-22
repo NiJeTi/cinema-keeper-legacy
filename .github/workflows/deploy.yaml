@@ -9,7 +9,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
+      - uses: gittools/actions/gitversion/execute@v0.9.7
+        id: calculate-version
+        with:
+          useConfigFile: true
+
       - name: Copy deployment scripts to server
         uses: appleboy/scp-action@master
         with:
@@ -22,12 +27,15 @@ jobs:
 
       - name: Execute main deployment script
         uses: appleboy/ssh-action@master
-        with: 
+        env:
+          APP_VERSION: ${{ steps.calculate-version.outputs.semVer }}
+        with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_KEY }}
+          envs: APP_VERSION
           script: |
             cd ${{ secrets.SERVER_DEPLOY_PATH }}
             docker login --username ${{ github.actor }} --password ${{ secrets.CR_PAT }} ghcr.io
-            docker-compose -p prod down --rmi
-            docker-compose -p prod up -d --force-recreate
+            docker-compose -p prod down
+            docker-compose -p prod up -d
