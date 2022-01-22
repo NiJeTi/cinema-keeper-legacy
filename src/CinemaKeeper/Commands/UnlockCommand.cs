@@ -26,7 +26,7 @@ public class UnlockCommand : InteractionModuleBase, ISlashCommandBuilder
         ILogger logger,
         ILocalizationProvider localization)
     {
-        _logger = logger;
+        _logger = logger.ForContext<UnlockCommand>();
         _localization = localization;
     }
 

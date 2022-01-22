@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CinemaKeeper.Storage.Migrations
 {
     [DbContext(typeof(Postgres))]
-    [Migration("20220122170451_Quotes")]
+    [Migration("20220122175407_Quotes")]
     partial class Quotes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 
 using CinemaKeeper.Commands.Preconditions;
-using CinemaKeeper.Commands.Preconditions.Parameters;
 using CinemaKeeper.Services;
 
 using Discord;
@@ -19,12 +18,11 @@ public class LockCommand : InteractionModuleBase, ISlashCommandBuilder
 {
     private const string Command = "lock";
 
-    public const int MinUserLimit = 1;
-    public const int MaxUserLimit = 99;
-
-    private readonly ILocalizationProvider _localization;
+    private const int MinUserLimit = 1;
+    private const int MaxUserLimit = 99;
 
     private readonly ILogger _logger;
+    private readonly ILocalizationProvider _localization;
 
     public LockCommand(
         ILogger logger,
@@ -49,7 +47,7 @@ public class LockCommand : InteractionModuleBase, ISlashCommandBuilder
 
     [RequireVoiceChannel]
     [SlashCommand(Command, "")]
-    public async Task Execute([UserLimitParameter] int limit = default)
+    public async Task Execute(int limit = default)
     {
         // BUG: Voice channel is not null after leave for several seconds
         var voiceChannel = ((SocketGuildUser) Context.User).VoiceChannel;

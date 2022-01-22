@@ -10,13 +10,13 @@
         "command": "Set user limit for current voice channel",
         "limitOption": "Custom user limit number"
       },
-      "locked": "Locked channel {0} for **{1}** user(s)"
+      "locked": "Locked {0} for **{1}** user(s)"
     },
     "unlock": {
       "definition": {
         "command": "Remove user limit for current voice channel"
       },
-      "unlocked": "Unlocked channel {0}"
+      "unlocked": "Unlocked {0}"
     },
     "quote": {
       "definition": {
@@ -28,6 +28,13 @@
       "description": "The most stunning quotes of {0}",
       "noQuotesForUser": "There are no stored quotes of {0}",
       "quoteAdded": "Quote for {0} added"
+    },
+    "cast": {
+      "definition": {
+        "command": "Mention all users in the current or in a specified voice channel",
+        "channelOption": "Channel to mention"
+      },
+      "noUsers": "There are no users in {0}"
     }
   }
 }
