@@ -112,7 +112,7 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
     private Embed BuildMainEmbed(IUser author)
     {
         var title = _localization.Get("commands.quote.title");
-        var description = _localization.Get("commands.quote.description", author);
+        var description = _localization.Get("commands.quote.description", author.Mention);
 
         return new EmbedBuilder()
            .WithTitle(title)
