@@ -18,18 +18,13 @@ public class PostgresReader : IDatabaseReader, IAsyncDatabaseReader
         _postgres = postgres;
     }
 
-    public ReadOnlyCollection<Quote> GetUserQuotes(ulong userId) =>
-        _postgres.Quotes
-           .Where(q => q.Author == userId)
-           .OrderBy(q => q.CreatedAt)
-           .ToList()
-           .AsReadOnly();
+    public ReadOnlyCollection<Quote> GetUserQuotes(ulong userId) => GetUserQuotesAsync(userId).GetAwaiter().GetResult();
 
     public async Task<ReadOnlyCollection<Quote>> GetUserQuotesAsync(ulong userId)
     {
         var quotes = await _postgres.Quotes
            .Where(q => q.Author == userId)
-           .OrderBy(q => q.CreatedAt)
+           .OrderByDescending(q => q.CreatedAt)
            .ToListAsync();
 
         return quotes.AsReadOnly();

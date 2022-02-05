@@ -16,8 +16,7 @@ public class PostgresWriter : IDatabaseWriter, IAsyncDatabaseWriter
 
     public void AddQuote(Quote quote)
     {
-        _postgres.Quotes.Add(quote);
-        _postgres.SaveChanges();
+        AddQuoteAsync(quote).GetAwaiter().GetResult();
     }
 
     public async Task AddQuoteAsync(Quote quote)
