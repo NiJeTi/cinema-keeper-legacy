@@ -12,11 +12,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: gittools/actions/gitversion/setup@v0.9.7
+      - uses: gittools/actions/gitversion/setup@v0.9.11
         with:
-          versionSpec: '5.x'
+          versionSpec: "5.x"
 
-      - uses: gittools/actions/gitversion/execute@v0.9.7
+      - uses: gittools/actions/gitversion/execute@v0.9.11
         id: calculate-version
         with:
           useConfigFile: true
@@ -44,4 +44,4 @@ jobs:
             cd ${{ secrets.SERVER_DEPLOY_PATH }}
             docker login --username ${{ github.actor }} --password ${{ secrets.CR_PAT }} ghcr.io
             docker-compose -p prod down
-            docker-compose -p prod up -d
+            APP_VERSION=$APP_VERSION docker-compose -p prod up -d
