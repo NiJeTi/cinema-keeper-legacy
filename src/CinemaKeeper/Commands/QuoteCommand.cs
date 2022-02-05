@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +18,7 @@ using Serilog;
 namespace CinemaKeeper.Commands;
 
 [RequireContext(ContextType.Guild)]
-[RequireBotPermission(GuildPermission.SendMessages)]
+[RequireBotPermission(GuildPermission.SendMessages | GuildPermission.EmbedLinks)]
 public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
 {
     private const string Command = "quote";
@@ -25,6 +27,8 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
     private readonly IAsyncDatabaseReader _databaseReader;
     private readonly IAsyncDatabaseWriter _databaseWriter;
     private readonly ILocalizationProvider _localization;
+
+    private readonly Dictionary<ulong, IUser> _userCache = new();
 
     public QuoteCommand(
         ILogger logger,
@@ -58,56 +62,81 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
         await DeferAsync();
 
         if (message is null)
+            await ListQuotes(author);
+        else
+            await AddQuote(author, message);
+    }
+
+    private async Task ListQuotes(IUser author)
+    {
+        var quotes = await _databaseReader.GetUserQuotesAsync(author.Id);
+
+        if (!quotes.Any())
         {
-            var quotes = await _databaseReader.GetUserQuotesAsync(author.Id);
+            var response = _localization.Get("commands.quote.noQuotesForUser", author.Mention);
+            await FollowupAsync(response);
 
-            if (!quotes.Any())
-            {
-                var response = _localization.Get("commands.quote.noQuotesForUser", author.Mention);
-                await FollowupAsync(response);
-
-                _logger.Debug("No quotes for \"{User}\"", author.GetFullUsername());
-            }
-            else
-            {
-                var embeds = await BuildQuotesEmbeds(quotes, author);
-                await FollowupAsync(embeds: embeds);
-
-                _logger.Debug("Printed {QuoteCount} quote(s) of {User}", quotes.Count, author.GetFullUsername());
-            }
+            _logger.Debug("No quotes for \"{User}\"", author.GetFullUsername());
         }
         else
         {
-            var quote = new Quote(author.Id, message, DateTimeOffset.UtcNow, Context.User.Id);
-            await _databaseWriter.AddQuoteAsync(quote);
+            var mainEmbed = BuildMainEmbed(author);
+            var quotesEmbeds = await BuildQuotesEmbeds(quotes);
 
-            var response = _localization.Get("commands.quote.quoteAdded", author.Mention);
-            await FollowupAsync(response);
+            await FollowupAsync(embeds: new[] { mainEmbed });
 
-            _logger.Debug("Added quote of \"{User}\"", author.GetFullUsername());
+            const int maxEmbedsPerMessage = 10;
+            var partitions = Partitioner.Create(0, quotes.Count, maxEmbedsPerMessage).GetDynamicPartitions();
+
+            foreach (var (from, to) in partitions)
+            {
+                var partitionEmbeds = quotesEmbeds[from..to];
+                await Context.Channel.SendMessageAsync(embeds: partitionEmbeds);
+            }
+
+            _logger.Debug("Printed {QuoteCount} quote(s) of {User}", quotes.Count, author.GetFullUsername());
         }
     }
 
-    private async Task<Embed[]> BuildQuotesEmbeds(ReadOnlyCollection<Quote> quotes, IUser author)
+    private async Task AddQuote(IUser author, string message)
     {
-        var embeds = new Embed[1 + quotes.Count];
+        var quote = new Quote(author.Id, message, DateTimeOffset.UtcNow, Context.User.Id);
+        await _databaseWriter.AddQuoteAsync(quote);
 
+        var response = _localization.Get("commands.quote.quoteAdded", author.Mention);
+        await FollowupAsync(response);
+
+        _logger.Debug("Added quote of \"{User}\"", author.GetFullUsername());
+    }
+
+    private Embed BuildMainEmbed(IUser author)
+    {
         var title = _localization.Get("commands.quote.title");
-        var description = _localization.Get("commands.quote.description", author.Mention);
+        var description = _localization.Get("commands.quote.description", author);
 
-        var mainEmbed = new EmbedBuilder()
+        return new EmbedBuilder()
            .WithTitle(title)
            .WithDescription(description)
            .WithThumbnailUrl(author.GetAvatarUrl())
-           .WithColor(GetRandomColor());
+           .WithColor(GetRandomColor())
+           .Build();
+    }
 
-        embeds[0] = mainEmbed.Build();
+    private async Task<Embed[]> BuildQuotesEmbeds(ReadOnlyCollection<Quote> quotes)
+    {
+        var embeds = new Embed[quotes.Count];
 
         for (var i = 0; i < quotes.Count; i++)
         {
             var quote = quotes[i];
 
-            var addedBy = await Context.Client.GetUserAsync(quote.CreatedBy);
+            var userFoundInCache = _userCache.ContainsKey(quote.CreatedBy);
+
+            var addedBy = userFoundInCache
+                ? _userCache[quote.CreatedBy]
+                : await Context.Client.GetUserAsync(quote.CreatedBy);
+
+            _userCache[quote.CreatedBy] = addedBy;
 
             var embedBuilder = new EmbedBuilder()
                .WithTitle(quote.Text)
@@ -117,7 +146,7 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
                .WithTimestamp(quote.CreatedAt)
                .WithColor(GetRandomColor());
 
-            embeds[i + 1] = embedBuilder.Build();
+            embeds[i] = embedBuilder.Build();
         }
 
         return embeds;
@@ -130,4 +159,11 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
 
         return new Color(colorBytes[0], colorBytes[1], colorBytes[2]);
     }
+
+    // TODO: Use when there will be valid interfaces for components
+    private static MessageComponent BuildPaginationControls() =>
+        new ComponentBuilder()
+           .WithButton(customId: "previous", emote: new Emoji("◀"), style: ButtonStyle.Secondary)
+           .WithButton(customId: "next", emote: new Emoji("▶"), style: ButtonStyle.Secondary)
+           .Build();
 }
