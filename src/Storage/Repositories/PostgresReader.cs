@@ -24,7 +24,7 @@ public class PostgresReader : IDatabaseReader, IAsyncDatabaseReader
     {
         var quotes = await _postgres.Quotes
            .Where(q => q.Author == userId)
-           .OrderByDescending(q => q.CreatedAt)
+           .OrderBy(q => q.CreatedAt)
            .ToListAsync();
 
         return quotes.AsReadOnly();
