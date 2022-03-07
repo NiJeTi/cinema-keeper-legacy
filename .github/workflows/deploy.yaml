@@ -43,5 +43,4 @@ jobs:
           script: |
             cd ${{ secrets.SERVER_DEPLOY_PATH }}
             docker login --username ${{ github.actor }} --password ${{ secrets.CR_PAT }} ghcr.io
-            docker-compose -p prod down
             APP_VERSION=$APP_VERSION docker-compose -p prod up -d
