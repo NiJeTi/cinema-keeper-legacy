@@ -52,19 +52,19 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
            .WithName(Command)
            .WithDescription(command)
            .AddOption("author", ApplicationCommandOptionType.User, authorOption, true)
-           .AddOption("message", ApplicationCommandOptionType.String, messageOption)
+           .AddOption("text", ApplicationCommandOptionType.String, messageOption)
            .Build();
     }
 
     [SlashCommand(Command, "")]
-    public async Task Execute(IUser author, string? message = null)
+    public async Task Execute(IUser author, string? text = null)
     {
         await DeferAsync();
 
-        if (message is null)
+        if (text is null)
             await ListQuotes(author);
         else
-            await AddQuote(author, message);
+            await AddQuote(author, text);
     }
 
     private async Task ListQuotes(IUser author)
@@ -98,15 +98,35 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
         }
     }
 
-    private async Task AddQuote(IUser author, string message)
+    private async Task AddQuote(IUser author, string text)
     {
-        var quote = new Quote(author.Id, message, DateTimeOffset.UtcNow, Context.User.Id);
+        var addedBy = Context.User;
+        var timestamp = DateTimeOffset.UtcNow;
+
+        var quote = new Quote(author.Id, text, timestamp, addedBy.Id);
         await _databaseWriter.AddQuoteAsync(quote);
 
-        var response = _localization.Get("commands.quote.quoteAdded", author.Mention);
-        await FollowupAsync(response);
+        await FollowupAsync(embed: BuildNewQuoteEmbed(text, addedBy, author, timestamp));
 
         _logger.Debug("Added quote of \"{User}\"", author.GetFullUsername());
+    }
+
+    private Embed BuildNewQuoteEmbed(string text, IUser addedBy, IUser author, DateTimeOffset timestamp)
+    {
+        var title = _localization.Get("commands.quote.newQuote");
+
+        return new EmbedBuilder()
+           .WithTitle(title)
+           .WithDescription(text)
+           .WithAuthor(builder => builder
+               .WithName(addedBy.Username)
+               .WithIconUrl(addedBy.GetAvatarUrl()))
+           .WithFooter(builder => builder
+               .WithText(author.Username)
+               .WithIconUrl(author.GetAvatarUrl()))
+           .WithTimestamp(timestamp)
+           .WithColor(GetRandomColor())
+           .Build();
     }
 
     private Embed BuildMainEmbed(IUser author)

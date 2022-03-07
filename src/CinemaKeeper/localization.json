@@ -27,7 +27,7 @@
       "title": "Quotes",
       "description": "The most stunning quotes of {0}",
       "noQuotesForUser": "There are no stored quotes of {0}",
-      "quoteAdded": "Quote for {0} added"
+      "newQuote": "New quote"
     },
     "cast": {
       "definition": {
