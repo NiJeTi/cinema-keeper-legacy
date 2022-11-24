@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'src/**'
+      - "src/**"
   workflow_dispatch:
 
 env:
@@ -15,42 +15,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    
-    - uses: gittools/actions/gitversion/setup@v0.9.7
-      with:
-        versionSpec: '5.x'
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-    - uses: gittools/actions/gitversion/execute@v0.9.7
-      id: calculate-version
-      with:
-        useConfigFile: true
+      - uses: gittools/actions/gitversion/setup@v0.9.15
+        with:
+          versionSpec: "5.x"
 
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.CR_PAT }}
+      - uses: gittools/actions/gitversion/execute@v0.9.15
+        id: calculate-version
+        with:
+          useConfigFile: true
 
-    - name: Setup .NET 6
-      uses: actions/setup-dotnet@v1
-      with: 
-        dotnet-version: 6.0.x
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
 
-    - name: Publish app
-      run: dotnet publish --configuration Release --output ./build ${{ env.PROJECT_DIR }}
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
 
-    - name: Build and upload Docker image
-      uses: docker/build-push-action@v2
-      with:
-        file: ${{ env.PROJECT_DIR }}/Dockerfile
-        push: true
-        tags:
-          ghcr.io/nijeti/cinema-keeper:latest,ghcr.io/nijeti/cinema-keeper:${{ steps.calculate-version.outputs.semVer }}
+      - name: Publish app
+        run: dotnet publish --configuration Release --output ./build ${{ env.PROJECT_DIR }}
 
-    - run: |
-        git tag ${{ steps.calculate-version.outputs.semVer }}
-        git push --tags
+      - name: Build and upload Docker image
+        uses: docker/build-push-action@v2
+        with:
+          file: ${{ env.PROJECT_DIR }}/Dockerfile
+          push: true
+          tags: ghcr.io/nijeti/cinema-keeper:latest,ghcr.io/nijeti/cinema-keeper:${{ steps.calculate-version.outputs.semVer }}
+
+      - run: |
+          git tag ${{ steps.calculate-version.outputs.semVer }}
+          git push --tags

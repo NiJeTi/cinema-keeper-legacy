@@ -1,13 +1,14 @@
 ﻿using System.Threading.Tasks;
 
 using CinemaKeeper.Commands.Preconditions;
+using CinemaKeeper.Extensions;
 using CinemaKeeper.Services;
 
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace CinemaKeeper.Commands;
 
@@ -21,14 +22,14 @@ public class LockCommand : InteractionModuleBase, ISlashCommandBuilder
     private const int MinUserLimit = 1;
     private const int MaxUserLimit = 99;
 
-    private readonly ILogger _logger;
+    private readonly ILogger<LockCommand> _logger;
     private readonly ILocalizationProvider _localization;
 
     public LockCommand(
-        ILogger logger,
+        ILogger<LockCommand> logger,
         ILocalizationProvider localization)
     {
-        _logger = logger.ForContext<LockCommand>();
+        _logger = logger;
         _localization = localization;
     }
 
@@ -40,8 +41,13 @@ public class LockCommand : InteractionModuleBase, ISlashCommandBuilder
         return new SlashCommandBuilder()
            .WithName(Command)
            .WithDescription(command)
-           .AddOption("limit", ApplicationCommandOptionType.Integer, limitOption,
-                minValue: MinUserLimit, maxValue: MaxUserLimit)
+           .AddOption(
+                new SlashCommandOptionBuilder()
+                   .WithName("limit")
+                   .WithDescription(limitOption)
+                   .WithType(ApplicationCommandOptionType.Integer)
+                   .WithMinValue(MinUserLimit)
+                   .WithMaxValue(MaxUserLimit))
            .Build();
     }
 
@@ -49,14 +55,13 @@ public class LockCommand : InteractionModuleBase, ISlashCommandBuilder
     [SlashCommand(Command, "")]
     public async Task Execute(int limit = default)
     {
-        // BUG: Voice channel is not null after leave for several seconds
         var voiceChannel = ((SocketGuildUser) Context.User).VoiceChannel;
-        limit = limit != default ? limit : voiceChannel.Users.Count;
+        limit = limit != default ? limit : voiceChannel.GetPresentUsers().Count;
         await voiceChannel.ModifyAsync(p => p.UserLimit = limit);
 
         var locked = _localization.Get("commands.lock.locked", voiceChannel.Mention, limit);
         await RespondAsync(locked, ephemeral: true);
 
-        _logger.Debug("Locked channel \"{VoiceChannel}\" for {UserLimit} user(s)", voiceChannel.Name, limit);
+        _logger.LogInformation("Locked channel \"{VoiceChannel}\" for {UserLimit} user(s)", voiceChannel.Name, limit);
     }
 }
