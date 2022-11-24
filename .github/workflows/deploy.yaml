@@ -12,11 +12,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: gittools/actions/gitversion/setup@v0.9.11
+      - uses: gittools/actions/gitversion/setup@v0.9.15
         with:
           versionSpec: "5.x"
 
-      - uses: gittools/actions/gitversion/execute@v0.9.11
+      - uses: gittools/actions/gitversion/execute@v0.9.15
         id: calculate-version
         with:
           useConfigFile: true
