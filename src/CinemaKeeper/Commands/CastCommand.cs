@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using CinemaKeeper.Exceptions;
+using CinemaKeeper.Extensions;
 using CinemaKeeper.Services;
 
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace CinemaKeeper.Commands;
 
@@ -21,14 +22,14 @@ public class CastCommand : InteractionModuleBase, ISlashCommandBuilder
 {
     private const string Command = "cast";
 
-    private readonly ILogger _logger;
+    private readonly ILogger<CastCommand> _logger;
     private readonly ILocalizationProvider _localization;
 
     public CastCommand(
-        ILogger logger,
+        ILogger<CastCommand> logger,
         ILocalizationProvider localization)
     {
-        _logger = logger.ForContext<CastCommand>();
+        _logger = logger;
         _localization = localization;
     }
 
@@ -40,31 +41,35 @@ public class CastCommand : InteractionModuleBase, ISlashCommandBuilder
         return new SlashCommandBuilder()
            .WithName(Command)
            .WithDescription(command)
-           .AddOption("channel", ApplicationCommandOptionType.Channel, channelOption,
-                channelTypes: new List<ChannelType> { ChannelType.Voice })
+           .AddOption(
+                new SlashCommandOptionBuilder()
+                   .WithName("channel")
+                   .WithDescription(channelOption)
+                   .WithType(ApplicationCommandOptionType.Channel)
+                   .AddChannelType(ChannelType.Voice))
            .Build();
     }
 
     [SlashCommand(Command, "")]
     public async Task Execute(IGuildChannel? channel = null)
     {
-        var user = (SocketGuildUser) Context.User;
+        var currentUser = (SocketGuildUser) Context.User;
 
         var guildChannel = (SocketGuildChannel) (channel
-            ?? user.VoiceChannel
+            ?? currentUser.VoiceChannel
             ?? throw new UserNotInVoiceChannelException());
 
-        if (!guildChannel.Users.Any())
+        if (!guildChannel.GetPresentUsers().Except(new[] { currentUser }).Any())
         {
             var noUsers = _localization.Get("commands.cast.noUsers", guildChannel);
             await RespondAsync(noUsers, ephemeral: true);
         }
         else
         {
-            var mention = BuildMentionString(guildChannel.Users, user);
+            var mention = BuildMentionString(guildChannel.GetPresentUsers(), currentUser);
             await RespondAsync(mention, allowedMentions: AllowedMentions.All);
 
-            _logger.Debug("Mentioned all users in {VoiceChannel}", guildChannel.Name);
+            _logger.LogDebug("Mentioned all users in \"{VoiceChannel}\"", guildChannel.Name);
         }
     }
 

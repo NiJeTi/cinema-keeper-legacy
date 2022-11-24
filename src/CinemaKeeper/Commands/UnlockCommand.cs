@@ -53,6 +53,6 @@ public class UnlockCommand : InteractionModuleBase, ISlashCommandBuilder
         var response = _localization.Get("commands.unlock.unlocked", voiceChannel.Mention);
         await RespondAsync(response, ephemeral: true);
 
-        _logger.Debug("Unlocked channel {VoiceChannel}", voiceChannel.Name);
+        _logger.Debug("Unlocked channel \"{VoiceChannel}\"", voiceChannel.Name);
     }
 }

@@ -50,50 +50,60 @@ internal static class Program
     private static IHost CreateHost(string[] args) =>
         Host.CreateDefaultBuilder(args)
            .ConfigureLogging(builder => builder.ClearProviders())
-           .UseSerilog((context, configuration) =>
-            {
-                configuration
-                   .ReadFrom.Configuration(context.Configuration);
-            })
-           .ConfigureServices((context, services) =>
-            {
-                var configuration = context.Configuration;
+           .UseSerilog(
+                (context, configuration) =>
+                {
+                    configuration
+                       .ReadFrom.Configuration(context.Configuration);
+                })
+           .ConfigureServices(
+                (context, services) =>
+                {
+                    var configuration = context.Configuration;
 
-                services.Configure<DiscordSettings>(configuration.GetSection("Discord"));
-                services.Configure<LocalizationSettings>(configuration.GetSection("Localization"));
+                    services.Configure<DiscordSettings>(configuration.GetSection("Discord"));
+                    services.Configure<LocalizationSettings>(configuration.GetSection("Localization"));
 
-                services.AddSingleton<ILocalizationProvider, LocalizationProvider>();
+                    services.AddSingleton<ILocalizationProvider, LocalizationProvider>();
 
-                services.AddDiscordClient();
-                services.ConfigurePersistentStorage(configuration);
+                    services.AddDiscordClient();
+                    services.ConfigurePersistentStorage(configuration);
 
-                services.AddHostedService<DiscordRouter>();
-            })
+                    services.AddHostedService<DiscordRouter>();
+                })
            .Build();
 
     private static void AddDiscordClient(this IServiceCollection services)
     {
         services.AddSingleton<IDiscordLogger, DiscordLogger>();
 
-        services.AddSingleton(_ =>
-        {
-            var config = new DiscordSocketConfig { GatewayIntents = GatewayIntents.Guilds };
+        services.AddSingleton(
+            _ =>
+            {
+                var config = new DiscordSocketConfig
+                {
+                    GatewayIntents = GatewayIntents.Guilds
+                        | GatewayIntents.GuildPresences
+                        | GatewayIntents.GuildMembers
+                        | GatewayIntents.GuildVoiceStates
+                };
 
-            return new DiscordSocketClient(config);
-        });
+                return new DiscordSocketClient(config);
+            });
 
-        services.AddSingleton(provider =>
-        {
-            var discordClient = provider.GetRequiredService<DiscordSocketClient>();
-            var interactionService = new InteractionService(discordClient);
+        services.AddSingleton(
+            provider =>
+            {
+                var discordClient = provider.GetRequiredService<DiscordSocketClient>();
+                var interactionService = new InteractionService(discordClient);
 
-            using var scope = provider.CreateScope();
+                using var scope = provider.CreateScope();
 
-            interactionService
-               .AddModulesAsync(Assembly.GetExecutingAssembly(), scope.ServiceProvider)
-               .Wait();
+                interactionService
+                   .AddModulesAsync(Assembly.GetExecutingAssembly(), scope.ServiceProvider)
+                   .Wait();
 
-            return interactionService;
-        });
+                return interactionService;
+            });
     }
 }

@@ -395,6 +395,7 @@ dotnet_diagnostic.CA1822.severity = suggestion
 dotnet_diagnostic.CA1825.severity = error
 dotnet_diagnostic.CA1835.severity = suggestion
 dotnet_diagnostic.CA1837.severity = error
+dotnet_diagnostic.CA1848.severity = none # Needs research
 
 # Publish
 dotnet_analyzer_diagnostic.category-publish.severity = warning
