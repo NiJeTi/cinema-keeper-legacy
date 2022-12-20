@@ -6,5 +6,5 @@ namespace CinemaKeeper.Storage;
 
 public interface IDatabaseReader
 {
-    ReadOnlyCollection<Quote> GetUserQuotes(ulong userId);
+    ReadOnlyCollection<Quote> GetUserQuotes(ulong userId, ulong guildId);
 }

@@ -62,14 +62,14 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
         await DeferAsync();
 
         if (text is null)
-            await ListQuotes(author);
+            await ListQuotes(author, Context.Guild.Id);
         else
             await AddQuote(author, text);
     }
 
-    private async Task ListQuotes(IUser author)
+    private async Task ListQuotes(IUser author, ulong guildId)
     {
-        var quotes = await _databaseReader.GetUserQuotesAsync(author.Id);
+        var quotes = await _databaseReader.GetUserQuotesAsync(author.Id, guildId);
 
         if (!quotes.Any())
         {
