@@ -3,6 +3,7 @@ using System;
 using CinemaKeeper.Storage.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CinemaKeeper.Storage.Migrations
 {
     [DbContext(typeof(Postgres))]
-    partial class PostgresModelSnapshot : ModelSnapshot
+    [Migration("20221220182041_AddServerIdToQuotes")]
+    partial class AddServerIdToQuotes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
