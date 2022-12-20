@@ -101,9 +101,10 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
     private async Task AddQuote(IUser author, string text)
     {
         var addedBy = Context.User;
+        var createdOn = Context.Guild.Id;
         var timestamp = DateTimeOffset.UtcNow;
 
-        var quote = new Quote(author.Id, text, timestamp, addedBy.Id);
+        var quote = new Quote(author.Id, text, timestamp, addedBy.Id, createdOn);
         await _databaseWriter.AddQuoteAsync(quote);
 
         await FollowupAsync(embed: BuildNewQuoteEmbed(text, addedBy, author, timestamp));
