@@ -7,5 +7,5 @@ namespace CinemaKeeper.Storage;
 
 public interface IAsyncDatabaseReader
 {
-    Task<ReadOnlyCollection<Quote>> GetUserQuotesAsync(ulong userId);
+    Task<ReadOnlyCollection<Quote>> GetUserQuotesAsync(ulong userId, ulong guildId);
 }
