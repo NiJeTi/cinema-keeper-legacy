@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-using Discord;
+﻿using Discord;
 
 namespace CinemaKeeper.Services;
 

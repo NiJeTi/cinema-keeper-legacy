@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
 using CinemaKeeper.Exceptions;
@@ -12,25 +8,23 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
-using Serilog;
-
 namespace CinemaKeeper.Services;
 
-public class LocalizationProvider : ILocalizationProvider
+public partial class LocalizationProvider : ILocalizationProvider
 {
-    private static readonly Regex KeyPattern = new(@"^\w+(\.\w+)*$", RegexOptions.Compiled);
+    private static readonly Regex KeyPattern = GetKeyPatternRegex();
 
-    private readonly ILogger _logger;
+    private readonly ILogger<LocalizationProvider> _logger;
     private readonly IOptionsMonitor<LocalizationSettings> _settings;
 
     private DateTime _fileModifiedDateTime;
     private JObject? _localizations;
 
     public LocalizationProvider(
-        ILogger logger,
+        ILogger<LocalizationProvider> logger,
         IOptionsMonitor<LocalizationSettings> settings)
     {
-        _logger = logger.ForContext<LocalizationProvider>();
+        _logger = logger;
         _settings = settings;
     }
 
@@ -72,7 +66,7 @@ public class LocalizationProvider : ILocalizationProvider
 
         var result = RecursiveRead(Localizations, indexStack).ToString();
 
-        _logger.Verbose("Found localized string \"{String}\" for key \"{Key}\"", result, key);
+        _logger.LogTrace("Found localized string \"{String}\" for key \"{Key}\"", result, key);
 
         return result;
     }
@@ -101,4 +95,7 @@ public class LocalizationProvider : ILocalizationProvider
         var fileContents = File.ReadAllText(filePath);
         _localizations = JObject.Parse(fileContents);
     }
+
+    [GeneratedRegex(@"^\w+(\.\w+)*$", RegexOptions.Compiled)]
+    private static partial Regex GetKeyPatternRegex();
 }

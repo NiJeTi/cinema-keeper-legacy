@@ -1,53 +1,49 @@
-﻿using System.Threading.Tasks;
-
-using Discord;
-
-using Serilog;
+﻿using Discord;
 
 namespace CinemaKeeper.Services;
 
 public class DiscordLogger : IDiscordLogger
 {
-    private readonly ILogger _logger;
+    private readonly ILoggerProvider _loggerProvider;
 
-    public DiscordLogger(ILogger logger)
+    public DiscordLogger(ILoggerProvider loggerProvider)
     {
-        _logger = logger;
+        _loggerProvider = loggerProvider;
     }
 
     public Task Log(object source, LogMessage message)
     {
-        var logger = _logger.ForContext(source.GetType());
+        var logger = _loggerProvider.CreateLogger(source.GetType().ToString());
 
         switch (message.Severity)
         {
             case LogSeverity.Critical:
-                logger.Fatal(message.Exception, "{Message}", message.Message);
+                logger.LogCritical(message.Exception, "{Message}", message.Message);
 
                 break;
 
             case LogSeverity.Error:
-                logger.Error(message.Exception, "{Message}", message.Message);
+                logger.LogError(message.Exception, "{Message}", message.Message);
 
                 break;
 
             case LogSeverity.Warning:
-                logger.Warning(message.Exception, "{Message}", message.Message);
+                logger.LogWarning(message.Exception, "{Message}", message.Message);
 
                 break;
 
             case LogSeverity.Info:
-                logger.Information("{Message}", message.Message);
-
-                break;
-
-            case LogSeverity.Verbose:
-                logger.Verbose("{Message}", message.Message);
+                logger.LogInformation("{Message}", message.Message);
 
                 break;
 
             case LogSeverity.Debug:
-                logger.Debug("{Message}", message.Message);
+                logger.LogDebug("{Message}", message.Message);
+
+                break;
+
+            case LogSeverity.Verbose:
+                logger.LogTrace("{Message}", message.Message);
 
                 break;
         }

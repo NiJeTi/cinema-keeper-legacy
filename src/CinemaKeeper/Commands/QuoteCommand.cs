@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 using CinemaKeeper.Extensions;
 using CinemaKeeper.Services;
@@ -13,8 +9,6 @@ using CinemaKeeper.Storage.Models;
 using Discord;
 using Discord.Interactions;
 
-using Serilog;
-
 namespace CinemaKeeper.Commands;
 
 [RequireContext(ContextType.Guild)]
@@ -23,7 +17,7 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
 {
     private const string Command = "quote";
 
-    private readonly ILogger _logger;
+    private readonly ILogger<QuoteCommand> _logger;
     private readonly IAsyncDatabaseReader _databaseReader;
     private readonly IAsyncDatabaseWriter _databaseWriter;
     private readonly ILocalizationProvider _localization;
@@ -31,12 +25,12 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
     private readonly Dictionary<ulong, IUser> _userCache = new();
 
     public QuoteCommand(
-        ILogger logger,
+        ILogger<QuoteCommand> logger,
         IAsyncDatabaseReader databaseReader,
         IAsyncDatabaseWriter databaseWriter,
         ILocalizationProvider localization)
     {
-        _logger = logger.ForContext<QuoteCommand>();
+        _logger = logger;
         _databaseReader = databaseReader;
         _databaseWriter = databaseWriter;
         _localization = localization;
@@ -76,7 +70,7 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
             var response = _localization.Get("commands.quote.noQuotesForUser", author.Mention);
             await FollowupAsync(response);
 
-            _logger.Debug("No quotes for \"{User}\"", author.GetFullUsername());
+            _logger.LogDebug("No quotes for \"{User}\"", author.GetFullUsername());
         }
         else
         {
@@ -94,7 +88,7 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
                 await Context.Channel.SendMessageAsync(embeds: partitionEmbeds);
             }
 
-            _logger.Debug("Printed {QuoteCount} quote(s) of {User}", quotes.Count, author.GetFullUsername());
+            _logger.LogDebug("Printed {QuoteCount} quote(s) of {User}", quotes.Count, author.GetFullUsername());
         }
     }
 
@@ -109,7 +103,7 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
 
         await FollowupAsync(embed: BuildNewQuoteEmbed(text, addedBy, author, timestamp));
 
-        _logger.Debug("Added quote of \"{User}\"", author.GetFullUsername());
+        _logger.LogDebug("Added quote of \"{User}\"", author.GetFullUsername());
     }
 
     private Embed BuildNewQuoteEmbed(string text, IUser addedBy, IUser author, DateTimeOffset timestamp)
@@ -119,12 +113,14 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
         return new EmbedBuilder()
            .WithTitle(title)
            .WithDescription(text)
-           .WithAuthor(builder => builder
-               .WithName(addedBy.Username)
-               .WithIconUrl(addedBy.GetAvatarUrl()))
-           .WithFooter(builder => builder
-               .WithText(author.Username)
-               .WithIconUrl(author.GetAvatarUrl()))
+           .WithAuthor(
+                builder => builder
+                   .WithName(addedBy.Username)
+                   .WithIconUrl(addedBy.GetAvatarUrl()))
+           .WithFooter(
+                builder => builder
+                   .WithText(author.Username)
+                   .WithIconUrl(author.GetAvatarUrl()))
            .WithTimestamp(timestamp)
            .WithColor(GetRandomColor())
            .Build();
@@ -161,9 +157,10 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
 
             var embedBuilder = new EmbedBuilder()
                .WithTitle(quote.Text)
-               .WithFooter(builder => builder
-                   .WithText(addedBy.Username)
-                   .WithIconUrl(addedBy.GetAvatarUrl()))
+               .WithFooter(
+                    builder => builder
+                       .WithText(addedBy.Username)
+                       .WithIconUrl(addedBy.GetAvatarUrl()))
                .WithTimestamp(quote.CreatedAt)
                .WithColor(GetRandomColor());
 
@@ -175,7 +172,7 @@ public class QuoteCommand : InteractionModuleBase, ISlashCommandBuilder
 
     private static Color GetRandomColor()
     {
-        var colorBytes = new byte[3];
+        Span<byte> colorBytes = stackalloc byte[3];
         new Random().NextBytes(colorBytes);
 
         return new Color(colorBytes[0], colorBytes[1], colorBytes[2]);

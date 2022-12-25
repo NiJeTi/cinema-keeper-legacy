@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 using CinemaKeeper.Commands;
 using CinemaKeeper.Exceptions;
@@ -13,17 +9,13 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-
-using Serilog;
 
 namespace CinemaKeeper.Services.Workers;
 
 public class DiscordRouter : BackgroundService
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<DiscordRouter> _logger;
     private readonly IOptions<DiscordSettings> _discordSettings;
     private readonly IServiceProvider _serviceProvider;
     private readonly IHostEnvironment _environment;
@@ -32,7 +24,7 @@ public class DiscordRouter : BackgroundService
     private readonly ILocalizationProvider _localization;
 
     public DiscordRouter(
-        ILogger logger,
+        ILogger<DiscordRouter> logger,
         IOptions<DiscordSettings> discordSettings,
         IServiceProvider serviceProvider,
         IHostEnvironment environment,
@@ -41,7 +33,7 @@ public class DiscordRouter : BackgroundService
         IDiscordLogger discordLogger,
         ILocalizationProvider localization)
     {
-        _logger = logger.ForContext<DiscordRouter>();
+        _logger = logger;
         _discordSettings = discordSettings;
         _serviceProvider = serviceProvider;
         _environment = environment;
@@ -96,10 +88,11 @@ public class DiscordRouter : BackgroundService
             : command => _client.CreateGlobalApplicationCommandAsync(command);
 
         var registrationTasks = Assembly.GetExecutingAssembly().GetTypes()
-           .Where(t =>
-                typeof(ISlashCommandBuilder).IsAssignableFrom(t)
-                && !t.IsInterface
-                && !t.IsAbstract)
+           .Where(
+                t =>
+                    typeof(ISlashCommandBuilder).IsAssignableFrom(t)
+                    && !t.IsInterface
+                    && !t.IsAbstract)
            .Select(t => (ISlashCommandBuilder) ActivatorUtilities.CreateInstance(scope.ServiceProvider, t))
            .Select(b => registerCommand(b.Build()))
            .ToList();
@@ -124,8 +117,10 @@ public class DiscordRouter : BackgroundService
 
     private async Task AfterSlashCommandExecuted(SlashCommandInfo command, IInteractionContext context, IResult result)
     {
-        _logger.Information("Executed command \"{Command}\" for user \"{User}\"",
-            command.Name, context.User.GetFullUsername());
+        _logger.LogInformation(
+            "Executed command \"{Command}\" for user \"{User}\"",
+            command.Name,
+            context.User.GetFullUsername());
 
         if (!result.IsSuccess)
         {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace CinemaKeeper.Settings;
+﻿namespace CinemaKeeper.Settings;
 
 [Serializable]
 public record LocalizationSettings

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CinemaKeeper.Exceptions;
+﻿namespace CinemaKeeper.Exceptions;
 
 public class FlowException : Exception
 {

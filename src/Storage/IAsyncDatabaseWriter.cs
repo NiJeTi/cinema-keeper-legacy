@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-using CinemaKeeper.Storage.Models;
+﻿using CinemaKeeper.Storage.Models;
 
 namespace CinemaKeeper.Storage;
 

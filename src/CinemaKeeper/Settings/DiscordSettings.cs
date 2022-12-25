@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CinemaKeeper.Settings;
+﻿namespace CinemaKeeper.Settings;
 
 [Serializable]
 public record DiscordSettings

@@ -1,14 +1,10 @@
-﻿using System.Threading.Tasks;
-
-using CinemaKeeper.Commands.Preconditions;
+﻿using CinemaKeeper.Commands.Preconditions;
 using CinemaKeeper.Extensions;
 using CinemaKeeper.Services;
 
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-
-using Microsoft.Extensions.Logging;
 
 namespace CinemaKeeper.Commands;
 
