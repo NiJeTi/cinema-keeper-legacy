@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CinemaKeeper.Storage.Models
+﻿namespace CinemaKeeper.Storage.Models
 {
     public class Quote : DatabaseEntity
     {

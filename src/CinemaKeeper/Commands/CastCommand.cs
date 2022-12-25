@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using CinemaKeeper.Exceptions;
+﻿using CinemaKeeper.Exceptions;
 using CinemaKeeper.Extensions;
 using CinemaKeeper.Services;
 
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-
-using Microsoft.Extensions.Logging;
 
 namespace CinemaKeeper.Commands;
 

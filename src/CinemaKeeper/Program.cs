@@ -1,4 +1,3 @@
-using System;
 using System.Reflection;
 
 using CinemaKeeper.Services;
@@ -9,10 +8,6 @@ using CinemaKeeper.Storage.Extensions;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 using Serilog;
 

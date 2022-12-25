@@ -35,10 +35,10 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
 
-      - name: Setup .NET 6
+      - name: Setup .NET 7
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 7.0.x
 
       - name: Publish app
         run: dotnet publish --configuration Release --output ./build ${{ env.PROJECT_DIR }}

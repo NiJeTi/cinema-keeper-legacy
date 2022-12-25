@@ -11,10 +11,11 @@ public static class ServiceCollectionExtensions
 {
     public static void ConfigurePersistentStorage(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<Postgres>(options =>
-        {
-            options.UseNpgsql(configuration.GetConnectionString("Postgres"));
-        });
+        services.AddDbContext<Postgres>(
+            options =>
+            {
+                options.UseNpgsql(configuration.GetConnectionString("Postgres"));
+            });
 
         services.AddScoped<IDatabaseReader, PostgresReader>();
         services.AddScoped<IAsyncDatabaseReader, PostgresReader>();

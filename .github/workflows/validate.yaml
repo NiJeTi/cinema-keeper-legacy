@@ -2,9 +2,9 @@ name: Validate
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'src/**'
+      - "src/**"
   workflow_dispatch:
 
 env:
@@ -19,10 +19,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup .NET 6
+      - name: Setup .NET 7
         uses: actions/setup-dotnet@v1
-        with: 
-          dotnet-version: 6.0.x
+        with:
+          dotnet-version: 7.0.x
 
       - name: Build
         run: dotnet build --configuration Release ${{ env.PROJECT_DIR }}

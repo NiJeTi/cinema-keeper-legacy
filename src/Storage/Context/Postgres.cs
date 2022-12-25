@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-using CinemaKeeper.Storage.Models;
+﻿using CinemaKeeper.Storage.Models;
 
 using Microsoft.EntityFrameworkCore;
 

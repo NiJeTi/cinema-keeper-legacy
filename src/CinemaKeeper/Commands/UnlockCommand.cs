@@ -1,13 +1,9 @@
-﻿using System.Threading.Tasks;
-
-using CinemaKeeper.Commands.Preconditions;
+﻿using CinemaKeeper.Commands.Preconditions;
 using CinemaKeeper.Services;
 
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-
-using Serilog;
 
 namespace CinemaKeeper.Commands;
 
@@ -19,14 +15,14 @@ public class UnlockCommand : InteractionModuleBase, ISlashCommandBuilder
 {
     private const string Command = "unlock";
 
-    private readonly ILogger _logger;
+    private readonly ILogger<UnlockCommand> _logger;
     private readonly ILocalizationProvider _localization;
 
     public UnlockCommand(
-        ILogger logger,
+        ILogger<UnlockCommand> logger,
         ILocalizationProvider localization)
     {
-        _logger = logger.ForContext<UnlockCommand>();
+        _logger = logger;
         _localization = localization;
     }
 
@@ -53,6 +49,6 @@ public class UnlockCommand : InteractionModuleBase, ISlashCommandBuilder
         var response = _localization.Get("commands.unlock.unlocked", voiceChannel.Mention);
         await RespondAsync(response, ephemeral: true);
 
-        _logger.Debug("Unlocked channel \"{VoiceChannel}\"", voiceChannel.Name);
+        _logger.LogDebug("Unlocked channel \"{VoiceChannel}\"", voiceChannel.Name);
     }
 }
