@@ -42,9 +42,10 @@ internal static class Program
         }
     }
 
-    private static IHost CreateHost(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-           .ConfigureLogging(builder => builder.ClearProviders())
+    private static IHost CreateHost(string[] args)
+    {
+        return Host
+           .CreateDefaultBuilder(args)
            .UseSerilog(
                 (context, configuration) =>
                 {
@@ -67,6 +68,7 @@ internal static class Program
                     services.AddHostedService<DiscordRouter>();
                 })
            .Build();
+    }
 
     private static void AddDiscordClient(this IServiceCollection services)
     {
